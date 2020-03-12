@@ -72,3 +72,12 @@ puts Gear.new(52, 11, 26, 1.5).gear_inches
 #   entangled mess. A day will come when it’s easier to rewrite 
 #   everything than to change anything.
 
+# Other dependencies
+# Message chaining
+#   Creates a dependency between the original object and every object
+#   and message along the way to its ultimate target.
+#   Any change in intermediate objects forces change in first object.
+# Test Driven Development
+#   Tightly coupled testing code.
+#   Always refacoring required despite no behavior changes to code.
+#   Tests begins to seem costly relative to their value.
