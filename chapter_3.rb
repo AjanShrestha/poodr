@@ -424,3 +424,87 @@ end
 # but it’s especially useful when the defaults are more complicated. 
 # If your defaults are more than simple numbers or strings, implement 
 # a defaults method.
+
+#### Isolate Multiparameter Initialization ####
+# Sometimes you will be forced to depend on a method that requires 
+# fixed-order arguments where you do not own and thus cannot change 
+# the method itself.
+
+# Imagine that Gear is part of a framework and that its 
+# initialization method requires fixed-order arguments. Imagine also 
+# that your code has many places where you must create a new instance 
+# of Gear. Gear’s initialize method is external to your application; 
+# it is part of an external interface over which you have no control.
+
+# As dire as this situation appears, you are not doomed to accept the 
+# dependencies. Just as you would DRY out repetitive code inside of a 
+# class, DRY out the creation of new Gear instances by creating a 
+# single method to wrap the external interface. The classes in your 
+# application should depend on code that you own; use a wrapping 
+# method to isolate external dependencies.
+
+# In this example, the SomeFramework::Gear class is not owned by your 
+# application; it is part of an external framework. Its 
+# initialization method requires fixed-order arguments. The 
+# GearWrapper module was created to avoid having multiple 
+# dependencies on the order of those arguments. GearWrapper isolates 
+# all knowledge of the external interface in one place and, equally 
+# importantly, it provides an improved interface for your application.
+
+############## Page 50 ##############
+module SomeFramework
+  class Gear
+    attr_reader :chainring, :cog, :wheel
+    def initialize(chainring, cog, wheel)
+      @chainring = chainring
+      @cog       = cog
+      @wheel     = wheel
+    end
+  # ...
+  end
+end
+
+# wrap the interface to protect yourself from changes
+module GearWrapper
+  def self.gear(args)
+    SomeFramework::Gear.new(
+      args[:chainring],
+      args[:cog],
+      args[:wheel]
+    )
+  end
+end
+
+# Now you can create a new Gear using an arguments hash.
+GearWrapper.gear(
+  :chainring => 52,
+  :cog       => 11,
+  :wheel     => Wheel.new(26, 1.5)
+).gear_inches
+
+# There are two things to note about GearWrapper. 
+# First, it is a Ruby module instead of a class. 
+# GearWrapper is responsible for creating new instances of 
+# SomeFramework::Gear. Using a module here lets you define a separate 
+# and distinct object to which you can send the gear message while 
+# simultaneously conveying the idea that you don’t expect to have 
+# instances of GearWrapper. You may already have experience with 
+# including modules into classes; in the example above GearWrapper is 
+# not meant to be included in another class, it’s meant to directly 
+# respond to the gear message.
+
+# The other interesting thing about GearWrapper is that its sole 
+# purpose is to create instances of some other class. Object-oriented 
+# designers have a word for objects like this; they call them 
+# factories. In some circles the term factory has acquired a negative 
+# connotation, but the term as used here is devoid of baggage. An 
+# object whose purpose is to create other objects is a factory; the 
+# word factory implies nothing more, and use of it is the most 
+# expedient way to communicate this idea.
+
+# The above technique for substituting an options hash for a list of 
+# fixed-order arguments is perfect for cases where you are forced to 
+# depend on external interfaces that you cannot change. Do not allow 
+# these kinds of external dependencies to permeate your code; protect 
+# yourself by wrapping each in a method that is owned by your own 
+# application.
