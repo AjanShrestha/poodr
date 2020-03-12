@@ -707,3 +707,15 @@ puts Wheel.new(26, 1.5, 52, 11).gear_inches
 # change.
 
 # Depend on things that change less often than you do
+
+## Summary ##
+
+# Dependency management is core to creating future-proof 
+# applications. Injecting dependencies creates loosely coupled 
+# objects that can be reused in novel ways. Isolating dependencies 
+# allows objects to quickly adapt to unexpected changes. Depending on 
+# abstractions decreases the likelihood of facing these changes.
+
+# The key to managing dependencies is to control their direction. The 
+# road to maintenance nirvana is paved with classes that depend on 
+# things that change less often than they do.
