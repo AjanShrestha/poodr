@@ -79,3 +79,11 @@ Also, notice now that you have drawn a sequence diagram, this design conversatio
 > _This transition from class-based design to message-based design is a turning point in your design career._ The message-based perspective yields more flexible applications than does the class-based perspective. Changing the fundamental design question from “I know I need this class, what should it do?” to **“I need to send this message, who should respond to it?”** is the first step in that direction.
 
 **You don’t send messages because you have objects, you have objects because you send messages.**
+
+### Asking for “What” Instead of Telling “How”
+
+> The distinction between a message that asks for what the sender wants and a message that tells the receiver how to behave may seem subtle but the consequences are significant. Understanding this difference is a key part of creating reusable classes with well-defined public interfaces.
+
+![How](./4.5.png)
+
+![What](./4.6.png)
