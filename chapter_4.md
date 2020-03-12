@@ -200,3 +200,11 @@ If your design forces the use of a private method in another class, first rethin
 ### Exercise Caution When Depending on Private Interfaces
 
 Despite your best efforts you may find that you must depend on a private interface. This is a dangerous dependency that should be isolated using the techniques described in Chapter 3. Even if you cannot avoid using a private method, you can prevent the method from being referenced in many places in your application. Depending on a private interface increases risk; keep this risk to a minimum by isolating the dependency.
+
+### Minimize Context
+
+Construct public interfaces with an eye toward minimizing the context they require from others. **Keep the _what_ versus _how_ distinction in mind; create public methods that allow senders to get what they want without knowing how your class implements its behavior.**
+
+**Conversely, do not succumb to a class that has an ill-defined or absent public interface.** When faced with a situation like that of the Mechanic class in Figure 4.5, do not give up and tell it how to behave by invoking all of its methods. Even if the original author did not define a public interface it is not too late to create one for yourself.
+
+Depending on how often you plan to use this new public interface, it can be a new method that you define and place in the Mechanic class, a new wrapper class that you create and use instead of Mechanic, or a single wrapping method that you place in your own class. **Do what best suits your needs, but create some kind of defined public interface and use it. This reduces your class’s context, making it easier to reuse and simpler to test.**
