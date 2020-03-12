@@ -54,13 +54,13 @@ puts Gear.new(52, 11, 24, 1.25).gear_inches
 # -> 125.27272727272728
 
 ############## Page 20 ##############
-puts Gear.new(52, 11).ratio # didn't this used to work?
+# puts Gear.new(52, 11).ratio # didn't this used to work?
 # chapter_2.rb:31:in `initialize': wrong number of arguments (given 2, expected 4) (ArgumentError)
 #    from chapter_2.rb:57:in `new'
 #    from chapter_2.rb:57:in `<main>'
 
 ############## Page 24 ##############
-class Gear:
+class Gear
   def initialize(chainring, cog)
     @chainring = chainring
     @cog       = cog
@@ -113,7 +113,6 @@ class ObscuringReferences
     # 0 is rim, 1 is tire
     data.collect {|cell|
       cell[0] + (cell[1] * 2)}
-    end
     # ... many other methods tha index into the array
   end
 end
@@ -124,7 +123,7 @@ end
 
 ############## Page 28 ##############
 class RevealingReferences
-  attr_reader: wheels
+  attr_reader :wheels
   def initialize(data)
     @wheels = wheelify(data)
   end
