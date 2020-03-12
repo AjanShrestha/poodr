@@ -58,3 +58,46 @@ puts Gear.new(52, 11).ratio # didn't this used to work?
 # chapter_2.rb:31:in `initialize': wrong number of arguments (given 2, expected 4) (ArgumentError)
 #    from chapter_2.rb:57:in `new'
 #    from chapter_2.rb:57:in `<main>'
+
+############## Page 24 ##############
+class Gear:
+  def initialize(chainring, cog)
+    @chainring = chainring
+    @cog       = cog
+  end
+
+  def ratio
+    @chainring / @cog.to_f        # <-- road to ruin
+  end
+end
+
+############## Page 25 ##############
+class Gear
+  attr_reader :chainring, :cog # <------
+  def initialize(chainring, cog)
+    @chainring = chainring
+    @cog       = cog
+  end
+
+  def ratio
+    chainring / cog.to_f       # <------
+  end
+end
+
+############## Page 25 ##############
+# default implementation via attr_read
+def cog
+  @cog
+end
+
+############## Page 25 ##############
+# a simple reimplementation of cog
+def cog
+  @cog * unanticipated_adjustment_factor
+end
+
+############## Page 25 ##############
+# a more comle one
+def cog
+  @cog * (foo? ? bar_adjustment : baz_adjustment)
+end
