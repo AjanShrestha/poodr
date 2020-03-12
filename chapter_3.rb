@@ -632,3 +632,12 @@ puts Wheel.new(26, 1.5, 52, 11).gear_inches
 # the concrete classes from which they were extracted. Depending on 
 # an abstraction is always safer than depending on a concretion 
 # because by its very nature, the abstraction is more stable. 
+
+#### Avoiding Dependent-Laden Classes ####
+# The consequences of changing a dependent- laden class are quite 
+# obvious—not so apparent are the consequences of even having a 
+# dependent-laden class. A class that, if changed, will cause changes 
+# to ripple through the application, will be under enormous pressure 
+# to never change. Ever. Under any circumstances whatsoever. Your 
+# application may be permanently handicapped by your reluctance to 
+# pay the price required to make a change to this class.
