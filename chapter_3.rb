@@ -608,3 +608,27 @@ puts Wheel.new(26, 1.5, 52, 11).gear_inches
 # be ranked along a scale of how likely it is to undergo a change 
 # relative to all other classes. This ranking is one key piece of 
 # information to consider when choosing the direction of dependencies.
+
+
+#### Recognizing Concretions and Abstractions ####
+# The term abstract is used here just as Merriam-Webster defines it, 
+# as “disassociated from any specific instance,” and, as so many 
+# things in Ruby, represents an idea about code as opposed to a 
+# specific technical restriction.
+
+# It is impossible to create an abstraction unknowingly or by 
+# accident; in statically typed languages defining an interface is 
+# always intentional.
+
+# In Ruby, when you inject Wheel into Gear such that Gear then 
+# depends on a Duck who responds to diameter, you are, however 
+# casually, defining an interface. This inter- face is an abstraction 
+# of the idea that a certain category of things will have a diameter. 
+# The abstraction was harvested from a concrete class; the idea is 
+# now “disassociated from any specific instance.”
+
+# The wonderful thing about abstractions is that they represent 
+# common, stable qualities. They are less likely to change than are 
+# the concrete classes from which they were extracted. Depending on 
+# an abstraction is always safer than depending on a concretion 
+# because by its very nature, the abstraction is more stable. 
