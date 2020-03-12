@@ -118,3 +118,9 @@ In the Figure:
 - Mechanic expects the argument passed along with prepare_trip to respond to bicycles.
 
 All of the knowledge about how mechanics prepare trips is now isolated inside of Mechanic and the context of Trip has been reduced. Both of the objects are now easier to change, to test, and to reuse.
+
+### Trusting Other Objects
+
+If objects were human and could describe their own relationships, in Figure 4.5 Trip would be telling Mechanic: “I know what I want and I know how you do it;” in Figure 4.6: “I know what I want and I know what you do” and in Figure 4.7: _“I know what I want and I trust you to do your part.”_
+
+This blind trust is a keystone of object-oriented design. It allows objects to collaborate without binding themselves to context and is necessary in any application that expects to grow and change.
