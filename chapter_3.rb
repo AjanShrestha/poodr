@@ -190,6 +190,7 @@ class Gear
   def gear_inches
     ratio * wheel.diameter
   end
+end
 # ...
 
 # Notice that this technique unconditionally creates a new Wheel each 
@@ -212,6 +213,7 @@ class Gear
   def wheel
     @wheel ||= Wheel.new(rim, tire)
   end
+end
 # ...
 
 # This new method lazily creates a new instance of Wheel, using 
