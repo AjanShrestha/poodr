@@ -23,3 +23,13 @@ These exposed methods comprise the class’s public interface.
 ## Defining Interfaces
 
 > Each of your classes is like a kitchen. The class exists to fulfill a single responsibility but implements many methods. These methods vary in scale and granularity and range from broad, general methods that expose the main responsibility of the class to tiny utility methods that are only meant to be used internally. Some of these methods represent the menu for your class and should be public; others deal with internal implementation details and are private.
+
+### Public Interfaces
+
+The methods that make up the public interface of your class comprise the face it presents to the world. They:
+
+- Reveal its primary responsibility
+- Are expected to be invoked by others
+- Will not change on a whim
+- Are safe for others to depend on
+- Are thoroughly documented in the tests
