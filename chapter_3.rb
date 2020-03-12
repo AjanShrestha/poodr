@@ -641,3 +641,69 @@ puts Wheel.new(26, 1.5, 52, 11).gear_inches
 # to never change. Ever. Under any circumstances whatsoever. Your 
 # application may be permanently handicapped by your reluctance to 
 # pay the price required to make a change to this class.
+
+#### Finding the Dependencies That Matter ####
+# Imagine each of these truths as a continuum along which all 
+# application code falls. Classes vary in their likelihood of change, 
+# their level of abstraction, and their number of dependents. Each 
+# quality matters, but the interesting design decisions occur at the 
+# place where likelihood of change intersects with number of 
+# dependents. Some of the possible combinations are healthy for your 
+# application; others are deadly.
+
+# Likelihood of change versus number of dependents
+# 
+# D   Many  |  Abstract Zone[A] |  Danger Zone[D] |
+# E         | Changes are       | These classes   |
+# P         | unlikely but, if  | WILL change and |
+# E         | they occur, will  | the changes will|
+# N         | have broad        | cascade into    |
+# D         | effects.          | dependents.     |
+#           |-------------------------------------|
+# E         |  Neutral Zone[B]  |  Neutral Zone[C]|
+# N         | Changes are       | Changes are     |
+# T         | unlikely and few  | likely but few  |
+# S   Few   | side effects.     | side effects.   |
+#             Less ------------------------ More
+# 
+
+# If you evaluate all of the classes in a well-designed application 
+# and place them on this grid, they will cluster in Zones A, B, and C.
+
+# Classes that have little likelihood of change but contain many 
+# dependents fall into Zone A. This Zone usually contains abstract 
+# classes or interfaces. In a thought- fully designed application 
+# this arrangement is inevitable; dependencies cluster around 
+# abstractions because abstractions are less likely to change.
+
+# Zone C is the opposite of Zone A. Zone C contains code that is 
+# quite likely to change but has few dependents. These classes tend 
+# to be more concrete, which makes them more likely to change, but 
+# this doesn’t matter because few other classes depend on them.
+
+# Zone B classes are of the least concern during design because they 
+# are almost neutral in their potential future effects. They rarely 
+# change and have few dependents.
+
+# Zone D, however, is aptly named the Danger Zone. A class ends up in 
+# Zone D when it is guaranteed to change and has many dependents. 
+# Changes to Zone D classes are costly; simple requests become coding 
+# nightmares as the effects of every change cascade through each 
+# dependent. If you have a very specific concrete class that has many 
+# dependents and you believe it resides in Zone A, that is, you 
+# believe it is unlikely to change, think again. When a concrete 
+# class has many dependents your alarm bells should be ringing. That 
+# class might actually be an occupant of Zone D.
+# Zone D classes represent a danger to the future health of the 
+# application. These are the classes that make an application painful 
+# to change. When a simple change has cascading effects that force 
+# many other changes, a Zone D class is at the root of the problem. 
+# When a change breaks some far away and seemingly unrelated bit of 
+# code, the design flaw originated here.
+# As depressing as this is, there is actually a way to make things 
+# worse. You can guarantee that any application will gradually become 
+# unmaintainable by making its Zone D classes more likely to change 
+# than their dependents. This maximizes the consequences of every 
+# change.
+
+# Depend on things that change less often than you do
