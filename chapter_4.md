@@ -33,3 +33,13 @@ The methods that make up the public interface of your class comprise the face it
 - Will not change on a whim
 - Are safe for others to depend on
 - Are thoroughly documented in the tests
+
+### Private Interfaces
+
+All other methods in the class are part of its private interface. They:
+
+- Handle implementation details
+- Are not expected to be sent by other objects
+- Can change for any reason whatsoever
+- Are unsafe for others to depend on
+- May not even be referenced in the tests
