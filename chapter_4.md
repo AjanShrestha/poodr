@@ -147,3 +147,11 @@ Perhaps the application should contain a TripFinder class. Figure 4.8 shows a se
 TripFinder contains all knowledge of what makes a trip suitable. It knows the rules; its job is to do whatever is necessary to respond to this message. It provides a consistent public interface while hiding messy and changeable internal implementation details.
 
 Moving this method into TripFinder makes the behavior available to any other object. In the unknown future perhaps other touring companies will use TripFinder to locate suitable trips via a Web service. Now that this behavior has been extracted from Customer, it can be used, in isolation, by any other object.
+
+## Writing Code That Puts Its Best (Inter)Face Forward
+
+The clarity of your interfaces reveals your design skills and reflects your self-discipline. Because design skills are always improving but never perfected, and because even today’s beautiful design may look ugly in light of tomorrow’s requirement, it is difficult to create perfect interfaces.
+
+This, however, should not deter you from trying. Interfaces evolve and to do so they must first be born. It is more important that a well-defined interface exist than that it be perfect.
+
+_Think_ about interfaces. Create them intentionally. It is your interfaces, more than all of your tests and any of your code, that define your application and determine its future.
