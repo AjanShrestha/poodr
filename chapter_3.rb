@@ -291,3 +291,81 @@ end
 # change. Although not every external method is a candidate for this 
 # preemptive isolation, it’s worth examining your code, looking for 
 # and wrapping the most vulnerable dependencies.
+
+
+### Remove Argument-Order Dependenciees ###
+# When you send a message that requires arguments, you, as the 
+# sender, cannot avoid having knowledge of those arguments. This 
+# dependency is unavoidable. However, passing arguments often 
+# involves a second, more subtle, dependency. Many method signatures 
+# not only require arguments, but they also require that those 
+# arguments be passed in a specific, fixed order.
+
+############## Page 46 ##############
+class Gear
+  attr_reader :chainring, :cog, :wheel
+  def initialize(chainring, cog, wheel)
+    @chainring = chainring
+    @cog       = cog
+    @wheel     = wheel
+  end
+# ...
+end
+
+Gear.new(
+  52,
+  11,
+  Wheel.new(26, 1.5)
+).gear_inches
+
+# Senders of new depend on the order of the arguments as they are 
+# specified in Gear’s initialize method. If that order changes, all 
+# the senders will be forced to change.
+
+#### Use Hashes for Initialization Arguments ####
+# There’s a simple way to avoid depending on fixed-order arguments. 
+# If you have control over the Gear initialize method, change the 
+# code to take a hash of options instead of a fixed list of 
+# parameters.
+
+# The initialize method now takes just one argument, args, a hash 
+# that contains all of the inputs. The method has been changed to 
+# extract its arguments from this hash.
+
+class Gear
+  attr_reader :chainring, :cog, :wheel
+  def initialize(args)
+    @chainring = args[:chainring]
+    @cog       = args[:cog]
+    @wheel     = args[:wheel]
+  end
+  # ...
+end
+
+Gear.end(
+  :chainring => 52,
+  :cog       => 11,
+  :wheel     => Wheel.new(26, 1.5)
+).gear_inches
+
+# The above technique has several advantages. 
+# The first and most obvious is that it removes every dependency on 
+# argument order. Gear is now free to add or remove initialization 
+# arguments and defaults, secure in the knowledge that no change will 
+# have side effects in other code.
+# This technique adds verbosity. In many situations verbosity is a 
+# detriment, but in this case it has value. The verbosity exists at 
+# the intersection between the needs of the present and the 
+# uncertainty of the future. Using fixed-order arguments requires 
+# less code today but you pay for this decrease in volume of code 
+# with an increase in the risk that changes will cascade into 
+# dependents later.
+# It lost its dependency on argument order but it gained a dependency 
+# on the names of the keys in the argument hash. This change is 
+# healthy. The new dependency is more stable than the old, and thus 
+# this code faces less risk of being forced to change. Additionally, 
+# and perhaps unexpectedly, the hash provides one new, secondary 
+# benefit: The key names in the hash furnish explicit documentation 
+# about the arguments. This is a byproduct of using a hash but the 
+# fact that it is unintentional makes it no less useful. Future 
+# maintainers of this code will be grateful for the information.
