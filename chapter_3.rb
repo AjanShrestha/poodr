@@ -129,7 +129,7 @@ puts Gear.new(52, 11, 26, 1.5).gear_inches
 
 ############## Page 41 ##############
 class Gear
-  attr_reader :chainring, :cog, :Wheel
+  attr_reader :chainring, :cog, :wheel
   def initialize(chainring, cog, wheel)
     @chainring = chainring
     @cog = cog
@@ -143,7 +143,7 @@ class Gear
 end
 
 # Gear expects a 'Duck' that knows 'diameter'
-puts Gear.new(52, 11, 26, 1.5).gear_inches
+puts Gear.new(52, 11,  Wheel.new(26, 1.5)).gear_inches
 
 # Gear now uses the @wheel variable to hold, and the wheel method to 
 # access, this object, but don’t be fooled, Gear doesn’t know or care 
@@ -332,6 +332,7 @@ Gear.new(
 # that contains all of the inputs. The method has been changed to 
 # extract its arguments from this hash.
 
+############## Page 47 ##############
 class Gear
   attr_reader :chainring, :cog, :wheel
   def initialize(args)
@@ -342,7 +343,7 @@ class Gear
   # ...
 end
 
-Gear.end(
+Gear.new(
   :chainring => 52,
   :cog       => 11,
   :wheel     => Wheel.new(26, 1.5)
@@ -459,6 +460,10 @@ module SomeFramework
       @chainring = chainring
       @cog       = cog
       @wheel     = wheel
+    end
+
+    def gear_inches
+      puts "Called"
     end
   # ...
   end
