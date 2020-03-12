@@ -208,3 +208,9 @@ Construct public interfaces with an eye toward minimizing the context they requi
 **Conversely, do not succumb to a class that has an ill-defined or absent public interface.** When faced with a situation like that of the Mechanic class in Figure 4.5, do not give up and tell it how to behave by invoking all of its methods. Even if the original author did not define a public interface it is not too late to create one for yourself.
 
 Depending on how often you plan to use this new public interface, it can be a new method that you define and place in the Mechanic class, a new wrapper class that you create and use instead of Mechanic, or a single wrapping method that you place in your own class. **Do what best suits your needs, but create some kind of defined public interface and use it. This reduces your class’s context, making it easier to reuse and simpler to test.**
+
+## The Law of Demeter
+
+Having read about responsibilities, dependencies, and interfaces you are now equipped to explore the Law of Demeter.
+
+**The Law of Demeter (LoD) is a set of coding rules that results in loosely coupled objects.** Loose coupling is nearly always a virtue but is just one component of design and must be balanced against competing needs. Some Demeter violations are harmless, but others expose a failure to correctly identify and define public interfaces.
