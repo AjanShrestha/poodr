@@ -52,3 +52,9 @@ puts Gear.new(52, 11, 26, 1.5).gear_inches
 
 puts Gear.new(52, 11, 24, 1.25).gear_inches
 # -> 125.27272727272728
+
+############## Page 20 ##############
+puts Gear.new(52, 11).ratio # didn't this used to work?
+# chapter_2.rb:31:in `initialize': wrong number of arguments (given 2, expected 4) (ArgumentError)
+#    from chapter_2.rb:57:in `new'
+#    from chapter_2.rb:57:in `<main>'
