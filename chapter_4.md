@@ -188,3 +188,11 @@ The keywords don’t deny access, they just make it a bit harder. Using them sen
 
 - You believe that you have better information today than programmers will have in the future.
 - You believe that those future programmers need to be prevented from accidentally using a method that you currently consider unstable.
+
+### Honor the Public Interface of Others
+
+Do your best to interact with other classes using only their public interfaces. Assume that the authors of those classes were just as intentional as you are now and they are trying desperately, across time and space, to communicate which methods are dependable. The public/private distinctions they made are intended to help you and it’s best to heed them.
+
+If your design forces the use of a private method in another class, first rethink your design. It’s possible that a committed effort will unearth an alternative; you should try very hard to find one.
+
+**A dependency on a private method of an external framework is a form of technical debt. Avoid these dependencies.**
