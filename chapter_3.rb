@@ -55,3 +55,20 @@ puts Gear.new(52, 11, 26, 1.5).gear_inches
 #     requires a rim and a tire.
 #   The order of those arguments. Gear knows the first argument to
 #     Wheel.new should be rim, the second, tire.
+
+
+# Coupling Between Objects(CBO)
+# These dependencies couple Gear to Wheel.
+# Alternatively, coupling creates a dependency.
+# The more tighly coupled two objects are, the more they behave
+#   like a single entity.
+# If you make a change to Wheel, you may need to make changes in Gear.
+# If you want to reuse Gear, Wheel comes along.
+# When you test Gear, you'll be testing Wheel too.
+# When two (or three or more) objects are so tightly coupled that 
+#   they behave as a unit, it’s impossible to reuse just one. Changes 
+#   to one object force changes to all. Left unchecked, unmanaged 
+#   dependencies cause an entire application to become an 
+#   entangled mess. A day will come when it’s easier to rewrite 
+#   everything than to change anything.
+
