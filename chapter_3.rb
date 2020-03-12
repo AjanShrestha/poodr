@@ -205,12 +205,12 @@ class Gear
     @tire      = tire
   end
 
-  def gear_inches:
+  def gear_inches
     ratio * wheel.diameter
   end
 
   def wheel
-    @wheel || = Wheel.new(rim, tire)
+    @wheel ||= Wheel.new(rim, tire)
   end
 # ...
 
@@ -233,3 +233,59 @@ class Gear
 # obscure class name references is unwieldy and inflexible, while one 
 # whose class name dependencies are concise, explicit, and isolated 
 # can easily adapt to new requirements.
+
+
+#### Isolate Vulnerable External Messages ####
+# external messages, i.e., messages that are “sent to someone other 
+# than self.” 
+# For example, the gear_inches method below sends ratio and wheel to 
+# self, but sends diameter to wheel:
+
+############## Page 44 ##############
+def gear_inches
+  ratio * wheel.diameter
+end
+
+# Imageine something complex computation
+
+############## Page 44 ##############
+def gear_inches
+  #... a few lines of scary math
+  foo = some_intermediate_result * wheel.diameter
+  #... more lines of scary math
+end
+
+# Now wheel.diameter is embedded deeply inside a complex method. This 
+# complex method depends on Gear responding to wheel and on wheel 
+# responding to diameter. Embedding this external dependency inside 
+# the gear_inches method is unnecessary and increases its 
+# vulnerability.
+
+# You can reduce your chance of being forced to make a change to 
+# gear_inches by removing the external dependency and encapsulating 
+# it in a method of its own
+
+############## Page 45 ##############
+def gear_inches
+  # ... a few lines of scary math
+  foo = some_intermediate_result * diameter
+  # ... more lines of scary math
+end
+
+def diameter
+  wheel.diameter
+end
+
+# In the original code, gear_inches knew that wheel had a diameter. 
+# This knowledge is a dangerous dependency that couples gear_inches 
+# to an external object and one of its methods. After this change, 
+# gear_inches is more abstract. Gear now isolates wheel.diameter in a 
+# separate method and gear_inches can depend on a message sent to 
+# self.
+
+# This technique becomes necessary when a class contains embedded 
+# references to a message that is likely to change. Isolating the 
+# reference provides some insurance against being affected by that 
+# change. Although not every external method is a candidate for this 
+# preemptive isolation, it’s worth examining your code, looking for 
+# and wrapping the most vulnerable dependencies.
