@@ -196,3 +196,7 @@ Do your best to interact with other classes using only their public interfaces. 
 If your design forces the use of a private method in another class, first rethink your design. It’s possible that a committed effort will unearth an alternative; you should try very hard to find one.
 
 **A dependency on a private method of an external framework is a form of technical debt. Avoid these dependencies.**
+
+### Exercise Caution When Depending on Private Interfaces
+
+Despite your best efforts you may find that you must depend on a private interface. This is a dangerous dependency that should be isolated using the techniques described in Chapter 3. Even if you cannot avoid using a private method, you can prevent the method from being referenced in many places in your application. Depending on a private interface increases risk; keep this risk to a minimum by isolating the dependency.
