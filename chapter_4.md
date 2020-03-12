@@ -155,3 +155,36 @@ The clarity of your interfaces reveals your design skills and reflects your self
 This, however, should not deter you from trying. Interfaces evolve and to do so they must first be born. It is more important that a well-defined interface exist than that it be perfect.
 
 _Think_ about interfaces. Create them intentionally. It is your interfaces, more than all of your tests and any of your code, that define your application and determine its future.
+
+### Create Explicit Interfaces
+
+Your goal is to write code that works today, that can easily be reused, and that can be adapted for unexpected use in the future. Other people will invoke your methods; it is your obligation to communicate which ones are dependable.
+
+Every time you create a class, declare its interfaces. Methods in the public
+interface should
+
+- Be explicitly identified as such
+- Be more about what than how
+- Have names that, insofar as you can anticipate, will not change
+- Take a hash as an options parameter
+
+Be just as intentional about the private interface; make it inescapably obvious. Tests, because they serve as documentation, can support this endeavor. Either do not test private methods or, if you must, segregate those tests from the tests of public methods. Do not allow your tests to fool others into unintentionally depending on the changeable, private interface.
+
+Ruby provides three relevant keywords: _public, protected, and private_. Use of these keywords serves two distinct purposes. First, they indicate which methods are stable and which are unstable. Second, they control how visible a method is to other parts of your application. These two purposes are very different. Conveying informa- tion that a method is stable or unstable is one thing; attempting to control how others use it is quite another.
+
+---
+
+#### Public, Protected, and Private Keywords
+
+The _private_ keyword denotes the least stable kind of method and provides the most restricted visibility. Private methods must be called with an implicit receiver, or, inversely, may never be called with an explicit receiver.
+
+The *protected *keyword also indicates an unstable method, but one with slightly different visibility restrictions. Protected methods allow explicit receivers as long as the receiver is self or an instance of the same class or subclass of self.
+
+The _public_ keyword indicates that a method is stable; public methods are visible everywhere.
+
+---
+
+The keywords don’t deny access, they just make it a bit harder. Using them sends two messages:
+
+- You believe that you have better information today than programmers will have in the future.
+- You believe that those future programmers need to be prevented from accidentally using a method that you currently consider unstable.
