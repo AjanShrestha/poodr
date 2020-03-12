@@ -141,3 +141,35 @@ class RevealingReferences
       Wheel.new(cell[0], cell[1])}
   end
 end
+
+############## Page 29 ##############
+def diameters
+  wheels.collect {|wheel|
+    wheel.rim + (wheel.tire * 2)}
+end
+
+############## Page 29 ##############
+# first - iterate over the array
+def diameters
+  wheels.collect {|wheel| diameter(wheel)}
+end
+
+# second - calculate diameter of ONE wheel
+def diameter(wheel)
+  wheel.rim + (wheel.tire * 2)
+end
+
+############## Page 30 ##############
+def gear_inches
+  # tire goes around rim twice for diameter
+  ratio * (rim + (tire * 2))
+end
+
+############## Page 30 ##############
+def gear_inches
+  ratio * diameter
+end
+
+def diameter
+  rim + (tire * 2)
+end
