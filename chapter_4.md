@@ -214,3 +214,15 @@ Depending on how often you plan to use this new public interface, it can be a ne
 Having read about responsibilities, dependencies, and interfaces you are now equipped to explore the Law of Demeter.
 
 **The Law of Demeter (LoD) is a set of coding rules that results in loosely coupled objects.** Loose coupling is nearly always a virtue but is just one component of design and must be balanced against competing needs. Some Demeter violations are harmless, but others expose a failure to correctly identify and define public interfaces.
+
+### Defining Demeter
+
+> Demeter restricts the set of objects to which a method may send messages; it prohibits routing a message to a third object via a second object of a different type. Demeter is often paraphrased as _"only talk to your immediate neigbors"_ or _"use only one dot."_
+
+Imagine that Trip’s depart method contains each of the following lines of code:
+
+    customer.bicycle.wheel.tire
+    customer.bicycle.wheel.rotate
+    hash.keys.sort.join(', ')
+
+Each line is a message chain containing a number of dots (periods). These chains are colloquially referred to as train wrecks; each method name represents a train car and the dots are the connections between them. These trains are an indication that you might be violating Demeter.
