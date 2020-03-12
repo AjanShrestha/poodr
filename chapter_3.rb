@@ -162,3 +162,74 @@ puts Gear.new(52, 11, 26, 1.5).gear_inches
 # injection these dependencies have been reduced to a single 
 # dependency on the diameter method. Gear is now smarter because it 
 # knows less.
+
+### Isolate Dependencies ###
+# If prevented from achieving perfection, your goals should switch to 
+# improving the overall situation by leaving the code better than you 
+# found it.
+# if you cannot remove unnecessary dependencies, you should isolate 
+# them within your class
+# you should isolate unnecessary dependences so that they are easy to 
+# spot and reduce when circumstances permit.
+
+#### Isolate Instance Creation ####
+# If you are so constrained that you cannot change the code to inject 
+# a Wheel into a Gear, you should isolate the creation of a new Wheel 
+# inside the Gear class. The intent is to explicitly expose the 
+# dependency while reducing its reach into your class.
+
+############## Page 43 ##############
+class Gear
+  attr_reader :chainring, :cog, :rim, :tire, :wheel
+  def initialize(chainring, cog, rim, tire)
+    @chainring = chainring
+    @cog       = cog
+    @wheel     = Wheel.new(rim, tire)
+  end
+
+  def gear_inches
+    ratio * wheel.diameter
+  end
+# ...
+
+# Notice that this technique unconditionally creates a new Wheel each 
+# time a new Gear is created.
+
+############## Page 43 ##############
+class Gear
+  attr_reader :chainring, :cog, :rim, :tire, :wheel
+  def initialize(chainring, cog, rim, tire)
+    @chainring = chainring
+    @cog       = cog
+    @rim       = rim
+    @tire      = tire
+  end
+
+  def gear_inches:
+    ratio * wheel.diameter
+  end
+
+  def wheel
+    @wheel || = Wheel.new(rim, tire)
+  end
+# ...
+
+# This new method lazily creates a new instance of Wheel, using 
+# Ruby’s ||= operator. In this case, creation of a new instance of 
+# Wheel is deferred until gear_inches invokes the new wheel method.
+
+# In both of these examples Gear still knows far too much; it still 
+# takes rim and tire as initialization arguments and it still creates 
+# its own new instance of Wheel. Gear is still stuck to Wheel; it can 
+# calculate the gear inches of no other kind of object.
+# However, an improvement has been made. These coding styles reduce 
+# the number of dependencies in gear_inches while publicly exposing 
+# Gear’s dependency on Wheel. They reveal dependencies instead of 
+# concealing them, lowering the barriers to reuse and making the code 
+# easier to refactor when circumstances allow. This change makes the 
+# code more agile; it can more easily adapt to the unknown future.
+
+# An application whose classes are sprinkled with entangled and 
+# obscure class name references is unwieldy and inflexible, while one 
+# whose class name dependencies are concise, explicit, and isolated 
+# can easily adapt to new requirements.
