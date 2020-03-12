@@ -78,6 +78,9 @@ Also, notice now that you have drawn a sequence diagram, this design conversatio
 
 > _This transition from class-based design to message-based design is a turning point in your design career._ The message-based perspective yields more flexible applications than does the class-based perspective. Changing the fundamental design question from “I know I need this class, what should it do?” to **“I need to send this message, who should respond to it?”** is the first step in that direction.
 
+![A simple sequence diagram](./images/4.3.png)
+![Moe talks to trip and bicycle](./images/4.4.png)
+
 **You don’t send messages because you have objects, you have objects because you send messages.**
 
 ### Asking for “What” Instead of Telling “How”
@@ -124,3 +127,23 @@ All of the knowledge about how mechanics prepare trips is now isolated inside of
 If objects were human and could describe their own relationships, in Figure 4.5 Trip would be telling Mechanic: “I know what I want and I know how you do it;” in Figure 4.6: “I know what I want and I know what you do” and in Figure 4.7: _“I know what I want and I trust you to do your part.”_
 
 This blind trust is a keystone of object-oriented design. It allows objects to collaborate without binding themselves to context and is necessary in any application that expects to grow and change.
+
+### Using Messages to Discover Objects
+
+Figure 4.3 was a literal translation of this use case, one in which Trip had too much responsibility. Figure 4.4 was an attempt to move the responsibility for finding available bicycles from Trip to Bicycle, but in doing so it placed an obligation on Customer to know far too much about what makes a trip “suitable.”
+
+Neither of these designs is very reusable or tolerant of change. These problems are revealed, inescapably, in the sequence diagrams. Both designs contain a violation of the single responsibility principle. In Figure 4.3, Trip knows too much. In Figure 4.4, Customer knows too much, tells other objects how to behave, and requires too much context.
+
+It is completely reasonable that Customer would send the suitable_trips message. That message repeats in both sequence diagrams because it feels innately cor- rect. It is exactly what Customer wants. **The problem is not with the sender, it is with the receiver. You have not yet identified an object whose responsibility it is to implement this method.**
+
+_This application needs an object to embody the rules at the intersection of Customer, Trip and Bicycle. The suitable_trips method will be part of its public interface._
+
+The realization that you need an as yet undefined object is one that you can arrive at via many routes. The advantage of discovering this missing object via sequence diagrams is that the cost of being wrong is very low and the impediments to changing your mind are extremely few. The sequence diagrams are experimental and will be dis- carded; your lack of attachment to them is a feature. They do not reflect your ultimate design, but instead they create an intention that is the starting point for your design.
+
+Perhaps the application should contain a TripFinder class. Figure 4.8 shows a sequence diagram where a TripFinder is responsible for finding suitable trips.
+
+![Moe asks the TripFinder for a suitable trip](./images/4.8.png)
+
+TripFinder contains all knowledge of what makes a trip suitable. It knows the rules; its job is to do whatever is necessary to respond to this message. It provides a consistent public interface while hiding messy and changeable internal implementation details.
+
+Moving this method into TripFinder makes the behavior available to any other object. In the unknown future perhaps other touring companies will use TripFinder to locate suitable trips via a Web service. Now that this behavior has been extracted from Customer, it can be used, in isolation, by any other object.
