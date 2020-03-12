@@ -4,7 +4,7 @@
 
 ## Understanding Interfaces
 
-![Communication Patterns](./4.1.png)
+![Communication Patterns](./images/4.1.png)
 In the first application, the messages have no apparent pattern. Every object may send any message to any other object. If the messages left visible trails, these trails would eventually draw a woven mat, with each object connected to every other.
 
 In the second application, the messages have a clearly defined pattern. Here the objects communicate in specific and well-defined ways. If these messages left trails, the trails would accumulate to create a set of islands with occasional bridges between them.
@@ -84,6 +84,37 @@ Also, notice now that you have drawn a sequence diagram, this design conversatio
 
 > The distinction between a message that asks for what the sender wants and a message that tells the receiver how to behave may seem subtle but the consequences are significant. Understanding this difference is a key part of creating reusable classes with well-defined public interfaces.
 
-![How](./4.5.png)
+![How](./images/4.5.png)
 
-![What](./4.6.png)
+![What](./images/4.6.png)
+
+### Seeking Context Independence
+
+The context that an object expects has a direct effect on how difficult it is to reuse. Objects that have a simple context are easy to use and easy to test; they expect few things from their surroundings. Objects that have a complicated context are hard to use and hard to test; they require complicated setup before they can do anything.
+
+The best possible situation is for an object to be completely independent of its context. An object that could collaborate with others without knowing who they are or what they do could be reused in novel and unanticipated ways.
+
+Context is a coat that Trip wears everywhere; any use of Trip, be it for testing or otherwise, requires that its context be established. Preparing a trip always requires preparing bicycles and in doing so Trip always sends the prepare_bicycle message to its Mechanic. You cannot reuse Trip unless you provide a Mechanic-like object that can respond to this message.
+
+You already know the technique for collaborating with others without knowing who they are—_dependency injection_. The new problem here is for Trip to invoke the correct behavior from Mechanic without knowing what Mechanic does. Trip wants to collaborate with Mechanic while maintaining context independence.
+
+![Seeking Context Independence](./images/4.7.png)
+
+At first glance this seems impossible. Trips have bicycles, bicycles must be prepared, and mechanics prepare bicycles. Having Trip ask Mechanic to prepare a Bicycle seems inevitable.
+
+However, it is not. The solution to this problem lies in the distinction between what and how, and arriving at a solution requires concentrating on what Trip wants.
+
+What Trip wants is to be prepared. The knowledge that it must be prepared is completely and legitimately within the realm of Trip’s responsibilities. However, the fact that bicycles need to be prepared may belong to the province of Mechanic. The need for bicycle preparation is more how a Trip gets prepared than what a Trip wants.
+
+Figure illustrates a third alternative sequence diagram for Trip preparation. In this example, Trip merely tells Mechanic what it wants, that is, to be prepared, and passes itself along as an argument.
+
+In this sequence diagram, Trip knows nothing about Mechanic but still manages to collaborate with it to get bicycles ready. Trip tells Mechanic what it wants, passes self along as an argument, and Mechanic immediately calls back to Trip to get the list of the Bicycles that need preparing.
+
+In the Figure:
+
+- ThepublicinterfaceforTripincludesbicycles.
+- The public interface for Mechanic includes prepare_trip and perhaps prepare_bicycle.
+- Trip expects to be holding onto an object that can respond to prepare_trip.
+- Mechanic expects the argument passed along with prepare_trip to respond to bicycles.
+
+All of the knowledge about how mechanics prepare trips is now isolated inside of Mechanic and the context of Trip has been reduced. Both of the objects are now easier to change, to test, and to reuse.
