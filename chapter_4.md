@@ -43,3 +43,11 @@ All other methods in the class are part of its private interface. They:
 - Can change for any reason whatsoever
 - Are unsafe for others to depend on
 - May not even be referenced in the tests
+
+### Responsibilities, Dependencies, and Interfaces
+
+_Creating classes that have a single responsibility—a single purpose._ If you think of a class as having a single purpose, then the things it does (its more specific responsibilities) are what allows it to fulfill that purpose. There is a correspondence between the statements you might make about these more specific responsibilities and the classes’ public methods. Indeed, public methods should read like a description of responsibilities. **The public interface is a contract that articulates the responsibilities of your class.**
+
+_A class should depend only on classes that change less often than it
+does._ **The public parts of a class are the stable parts; the private parts are the changeable parts.** When you mark methods as public or private you tell users of your class upon which methods they may safely depend. When your classes use the public methods of others, you trust those methods to be stable. When you decide to depend on the private methods of others, you understand that you are relying on something that is inherently unstable and are thus increasing the risk of being affected by a distant and
+unrelated change.
