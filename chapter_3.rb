@@ -369,3 +369,58 @@ Gear.end(
 # about the arguments. This is a byproduct of using a hash but the 
 # fact that it is unintentional makes it no less useful. Future 
 # maintainers of this code will be grateful for the information.
+
+
+#### Explicitly Define Defaults ####
+
+# Simple non-boolean defaults can be specified using Ruby’s || method
+############## Page 48 ##############
+# specifying defaults using ||
+def initialize(args)
+  @chainring = args[:chainring] || 40
+  @cog       = args[:cog]       || 18
+  @wheel     = args[:wheel]
+end
+# one you should use with caution
+# The || method acts as an or condition; it first evaluates the 
+# left-hand expression and then, if the expression returns false or 
+# nil, proceeds to evaluate and return the result of the right-hand 
+# expression. 
+
+# The fetch method expects the key you’re fetching to be in the hash 
+# and supplies several options for explicitly handling missing keys. 
+# Its advantage over || is that it does not automatically return nil 
+# when it fails to find your key.
+############## Page 49 ##############
+# specifying defaults using fetch
+def initialize(args)
+  @chainring = args.fetch(:chainring, 40)
+  @cog       = args.fetch(:cog, 18)
+  @wheel     = args[:wheel]
+end
+# Setting the defaults in this way means that callers can actually 
+# cause @chainring to get set to false or nil, something that is not 
+# possible when using the || technique.
+
+# You can also completely remove the defaults from initialize and 
+# isolate them inside of a separate wrapping method. The defaults 
+# method below defines a second hash that is merged into the options 
+# hash during initialization. In this case, merge has the same effect 
+# as fetch; the defaults will get merged only if their keys are not 
+# in the hash.
+############## Page 49 ##############
+# specifying defaults by merging as defaults hash
+def initialize(args)
+  args = defaults.merge(args)
+  @chainring = args[:chainring]
+  # ...
+end
+
+def defaults
+  {:chainring => 40, :cog => 18}
+end
+
+# This isolation technique is perfectly reasonable for the case above 
+# but it’s especially useful when the defaults are more complicated. 
+# If your defaults are more than simple numbers or strings, implement 
+# a defaults method.
