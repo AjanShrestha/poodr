@@ -513,3 +513,63 @@ GearWrapper.gear(
 # these kinds of external dependencies to permeate your code; protect 
 # yourself by wrapping each in a method that is owned by your own 
 # application.
+
+
+### Managing Dependency Direction ###
+# Dependencies always have a direction
+
+#### Reversing Dependencies ####
+
+############## Page 52 ##############
+class Gear
+  attr_reader :chainring, :cog
+  def initialize(chainring, cog)
+    @chainring = chainring
+    @cog       = cog
+  end
+
+  def gear_inches(diameter)
+    ratio * diameter
+  end
+
+  def ratio
+    chainring / cog.to_f
+  end
+# ...
+end
+
+class Wheel
+  attr_reader :rim, :tire, :gear
+  def initialize(rim, tire, chainring, cog)
+    @rim  = rim
+    @tire = tire
+    @gear = Gear.new(chainring, cog)
+  end
+
+  def diameter
+    rim + (tire * 2)
+  end
+
+  def gear_inches
+    gear.gear_inches(diameter)
+  end
+# ...
+end
+
+puts Wheel.new(26, 1.5, 52, 11).gear_inches
+
+# This reversal of dependencies does no apparent harm. Calculating 
+# gear_inches still requires collaboration between Gear and Wheel and 
+# the result of the calculation is unaffected by the reversal. One 
+# could infer that the direction of the dependency does not matter, 
+# that it makes no difference whether Gear depends on Wheel or vice 
+# versa.
+# Indeed, in an application that never changed, your choice would not 
+# matter. However, your application will change and it’s in that 
+# dynamic future where this present decision has repercussions. The 
+# choices you make about the direction of dependencies have far 
+# reaching consequences that manifest themselves for the life of your 
+# application. If you get this right, your application will be 
+# pleasant to work on and easy to maintain. If you get it wrong then 
+# the dependencies will gradually take over and the application will 
+# become harder and harder to change.
