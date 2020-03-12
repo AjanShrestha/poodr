@@ -573,3 +573,38 @@ puts Wheel.new(26, 1.5, 52, 11).gear_inches
 # pleasant to work on and easy to maintain. If you get it wrong then 
 # the dependencies will gradually take over and the application will 
 # become harder and harder to change.
+
+
+### Choosing Dependency Direction ###
+# depend on things that change less often than you do.
+# This short statement belies the sophistication of the idea, which 
+# is based on three simple truths about code:
+#   Some classes are more likely than others to have changes in 
+#     requirements.
+#   Concrete classes are more likely to change than abstract classes.
+#   Changing a class that has many dependents will result in 
+#     widespread consequences.
+
+
+#### Understanding Likelihood of Change ####
+# The idea that some classes are more likely to change than others 
+# applies not only to the code that you write for your own 
+# application but also to the code that you use but did not write. 
+# The Ruby base classes and the other framework code that you rely on 
+# both have their own inherent likelihood of change.
+
+# You are fortunate in that Ruby base classes change a great deal 
+# less often than your own code. Ruby base classes always change less 
+# often than your own classes and you can continue to depend on them 
+# without another thought.
+
+# Framework classes are another story; only you can assess how mature 
+# your frameworks are. In general, any framework you use will be more 
+# stable than the code you write, but it’s certainly possible to 
+# choose a framework that is undergoing such rapid development that 
+# its code changes more often than yours.
+
+# Regardless of its origin, every class used in your application can 
+# be ranked along a scale of how likely it is to undergo a change 
+# relative to all other classes. This ranking is one key piece of 
+# information to consider when choosing the direction of dependencies.
