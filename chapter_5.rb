@@ -82,3 +82,104 @@ end
 # to miss or to discount, but nonetheless, it exists. Trip’s prepare 
 # method firmly believes that its argument contains a preparer of 
 # bicycles.
+
+
+### Compunding the Problem
+# Imagine that requirements change. In addition to a mechanic, trip 
+# preparation now involves a trip coordinator and a driver. Following 
+# the established pattern of the code, you create new TripCoordinator 
+# and Driver classes and give them the behavior for which they are 
+# responsible. You also change Trip’s prepare method to invoke the 
+# correct behavior from each of its arguments.
+
+
+# The new TripCoordinator and Driver classes are simple and 
+# inoffensive but Trip’s prepare method is now a cause for alarm. It 
+# refers to three different classes by name and knows specific 
+# methods implemented in each. Risks have dramatically gone up. 
+# Trip’s prepare method might be forced to change because of a change 
+# elsewhere and it might unexpectedly break as the result of a 
+# distant, unrelated change.
+
+############## Page 88 ##############
+# Trip preparation becomes more complicated
+class Trip
+  attr_reader :bicycles, :customers,:vehicle
+
+  def prepare(preparers)
+    preparers.each {|preparer|
+      case preparer
+      when Mechanic
+        preparer.prepare_bicycles(bicycles)
+      when TripCoordinator
+        preparer.buy_food(customers)
+      when Driver
+        preparer.gas_up(vehicle)
+        preparer.fill_water_tank(vehicle)
+      end
+    }
+  end
+end
+
+# when you introduce TripCoordinator and Driver
+class TripCoordinator
+  def buy_food(customers)
+    # ...
+  end
+end
+
+class Driver
+  def gas_up(vehicle)
+    # ...
+  end
+
+  def fill_water_tank(vehicle)
+    # ...
+  end
+end
+
+# This code is the first step in a process that will paint you into a 
+# corner with no way out. Code like this gets written when 
+# programmers are blinded by existing classes and neglect to notice 
+# that they have overlooked important messages; this dependent-laden 
+# code is a natural outgrowth of a class-based perspective.
+
+# If your design imagination is constrained by class and you find 
+# yourself unex- pectedly dealing with objects that don’t understand 
+# the message you are sending, your tendency is to go hunt for 
+# messages that these new objects do understand. Because the new 
+# arguments are instances of TripCoordinator and Driver, you 
+# naturally examine the public interfaces of those classes and find 
+# buy_food, gas_up and fill_water_tank. This is the behavior that 
+# prepare wants.
+
+# The most obvious way to invoke this behavior is to send these very 
+# messages, but now you’re stuck. Every one of your arguments is of a 
+# different class and implements different methods; you must 
+# determine each argument’s class to know which message to send. 
+# Adding a case statement that switches on class solves the problem 
+# of sending the correct message to the correct object but causes an 
+# explosion of dependencies.
+
+# Count the number of new dependencies in the prepare method. It 
+# relies on specific classes, no others will do. It relies on the 
+# explicit names of those classes. It knows the names of the messages 
+# that each class understands, along with the arguments that those 
+# messages require. All of this knowledge increases risk; many 
+# distant changes will now have side effects on this code.
+
+# To make matters worse, this style of code propagates itself. When 
+# another new trip preparer appears, you, or the next person down the 
+# programming line, will add a new when branch to the case statement. 
+# Your application will accrue more and more methods like this, where 
+# the method knows many class names and sends a specific message 
+# based on class. The logical endpoint of this programming style is a 
+# stiff and inflexible application, where it eventually becomes 
+# easier to rewrite everything than to change anything.
+
+# Figure 5.2 shows the new sequence diagram. Every sequence diagram 
+# thus far has been simpler than its corresponding code, but this new 
+# diagram looks frighten- ingly complicated. This complexity is a 
+# warning. Sequence diagrams should always be simpler than the code 
+# they represent; when they are not, something is wrong with the 
+# design.
