@@ -559,3 +559,35 @@ end
 # Duck typing provides a way out of this trap. It removes the 
 # dependencies on class and thus avoids the subsequent type failures. 
 # It reveals stable abstractions on which your code can safely depend.
+
+### Static versus Dynamic Typing ###
+# This section compares dynamic and static typing, hoping to allay 
+# any fears that keep you from being fully committed to dynamic types.
+
+# Static and dynamic typing both make promises and each has costs and 
+# benefits. Static typing aficionados cite the following qualities:
+# • The compiler unearths type errors at compile time.
+# • Visible type information serves as documentation.
+# • Compiled code is optimized to run quickly.
+
+# These qualities represent strengths in a programming language only 
+# if you accept this set of corresponding assumptions:
+# • Runtime type errors will occur unless the compiler performs type 
+# checks.
+# • Programmers will not otherwise understand the code; they cannot 
+# infer an object’s type from its context.
+# • The application will run too slowly without these optimizations.
+
+# Dynamic typing proponents list these qualities:
+# • Code is interpreted and can be dynamically loaded; there is no 
+# compile/make cycle. 
+# • Source code does not include explicit type information.
+# • Metaprogramming is easier.
+
+# These qualities are strengths if you accept this set of assumptions:
+# • Overall application development is faster without a compile/make 
+# cycle.
+# • Programmers find the code easier to understand when it does not 
+# contain type declarations; they can infer an object’s type from its 
+# context.
+# • Metaprogramming is a desirable language feature.
