@@ -42,7 +42,7 @@
 # types, duck types, have public interfaces that represent a contract 
 # that must be explicit and well-documented.
 
-### Overlooking the Duck
+### Overlooking the Duck ###
 
 ############## Page 87 ##############
 class Trip
@@ -84,7 +84,7 @@ end
 # bicycles.
 
 
-### Compunding the Problem
+### Compunding the Problem ###
 # Imagine that requirements change. In addition to a mechanic, trip 
 # preparation now involves a trip coordinator and a driver. Following 
 # the established pattern of the code, you create new TripCoordinator 
@@ -183,3 +183,92 @@ end
 # warning. Sequence diagrams should always be simpler than the code 
 # they represent; when they are not, something is wrong with the 
 # design.
+
+
+### Finding the Duck ###
+# The key to removing the dependencies is to recognize that because 
+# Trip’s prepare method serves a single purpose, its arguments arrive 
+# wishing to collaborate to accom- plish a single goal. Every 
+# argument is here for the same reason and that reason is unre- lated 
+# to the argument’s underlying class.
+
+# **
+# Avoid getting sidetracked by your knowledge of what each argument’s 
+# class already does; think instead about what prepare needs. 
+# Considered from prepare’s point of view, the problem is 
+# straightforward. The prepare method wants to prepare the trip. Its 
+# arguments arrive ready to collaborate in trip preparation. The 
+# design would be simpler if prepare just trusted them to do so.
+
+# Figure 5.3 illustrates this idea. Here the prepare method doesn’t 
+# have a preordained expectation about the class of its arguments, 
+# instead it expects each to be a “Preparer.”
+
+# This expectation neatly turns the tables. You’ve pried yourself 
+# loose from existing classes and invented a duck type. The next step 
+# is to ask what message the prepare method can fruitfully send each 
+# Preparer. From this point of view, the answer is obvious: 
+# prepare_trip.
+
+# Figure 5.4 introduces the new message. Trip’s prepare method now 
+# expects its arguments to be Preparers that can respond to 
+# prepare_trip.
+
+# **
+# What kind of thing is Preparer? At this point it has no concrete 
+# existence; it’s an abstraction, an agreement about the public 
+# interface on an idea. It’s a figment of design.
+
+# ***
+# Objects that implement prepare_trip are Preparers and, conversely, 
+# objects that interact with Preparers only need trust them to 
+# implement the Preparer interface. Once you see this underlying 
+# abstraction, it’s easy to fix the code. Mechanic, TripCoordinator 
+# and Driver should behave like Preparers; they should implement 
+# prepare_trip.
+
+############## Page 93 ##############
+# Trip preparation becomes easier
+class Trip
+  attr_reader :bicycles, :customers, :vehicle
+
+  def prepare(preparers)
+    preparers.each {|preparer|
+      preparer.prepare_trip(self)
+    }
+  end
+end
+
+# when every prepare is a Duck
+# that responds to 'prepare_trip'
+class Mechanic
+  def prepare_trip(trip)
+    trip.bicycles.each {|bicycle|
+      prepare_bicycle(bicycle)
+    }
+  end
+
+  # ...
+end
+
+class TripCoordinator
+  def prepare_trip(trip)
+    buy_food(trip.customers)
+  end
+
+  # ...
+end
+
+class Driver
+  def prepare_trip(trip)
+    vehicle = trip.vehicle
+    gas_up(vehicle)
+    fill_water_tank(vehicle)
+  end
+
+  # ...
+end
+
+# The prepare method can now accept new Preparers without being 
+# forced to change, and it’s easy to create additional Preparers if 
+# the need arises.
