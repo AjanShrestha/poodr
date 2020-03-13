@@ -205,3 +205,49 @@ puts bike.spares
 # This is the exact problem that inheritance solves; that of highly 
 # related types that share common behavior but differ along some 
 # dimension.
+
+### Choosing Inheritance ###
+
+# It goes without saying that objects receive messages. No matter how 
+# complicated the code, the receiving object ultimately handles any 
+# message in one of two ways. It either responds directly or it 
+# passes the message on to some other object for a response.
+
+# Inheritance provides a way to define two objects as having a 
+# relationship such that when the first receives a message that it 
+# does not understand, it automatically forwards, or delegates, the 
+# message to the second. It’s as simple as that.
+
+# Many object-oriented languages sidestep these complications by 
+# providing single inheritance, whereby a subclass is allowed only 
+# one parent superclass. Ruby does this; it has single inheritance. A 
+# superclass may have many subclasses, but each subclass is permitted 
+# only one superclass.
+
+# Message forwarding via classical inheritance takes place between classes.
+
+# Even if you have never explicitly created a class hierarchy of your 
+# own, you use inheritance. When you define a new class but do not 
+# specify its superclass, Ruby automatically sets your new class’s 
+# superclass to Object. Every class you create is, by definition, a 
+# subclass of something.
+
+# You also already benefit from automatic delegation of messages to 
+# superclasses. When an object receives a message it does not 
+# understand, Ruby automatically for- wards that message up the 
+# superclass chain in search of a matching method implementation.
+
+# The fact that unknown messages get delegated up the superclass 
+# hierarchy implies that subclasses are everything their superclasses 
+# are, plus more. An instance of String is a String, but it’s also an 
+# Object. 
+
+# Every String is assumed to contain Object’s entire public interface 
+# and must respond appropriately to any message defined in that 
+# interface. Subclasses are thus specializations of their 
+# superclasses.
+
+# The current Bicycle example embeds multiple types inside the class. 
+# It’s time to abandon this code and revert to the original version 
+# of Bicycle. Perhaps mountain bikes are a specialization of Bicycle; 
+# perhaps this design problem can be solved using inheritance.
