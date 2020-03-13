@@ -352,3 +352,115 @@ puts mountain_bike.spares
 # class intermingles general bicycle code with specific road bike 
 # code. It’s time to separate these two things, to move the road bike 
 # code out of Bicycle and into a separate RoadBike subclass.
+
+### Creating an Abstract Superclass ###
+
+# Figure 6.6 shows a new class diagram where Bicycle is the 
+# superclass of both MountainBike and RoadBike. This is your goal; 
+# it’s the inheritance structure you intend to create. Bicycle will 
+# contain the common behavior, and MountainBike and RoadBike will add 
+# specializations. Bicycle’s public interface should include spares 
+# and size, and the interfaces of its subclasses will add their 
+# individual parts.
+
+# Bicycle now represents an abstract class. Chapter 3, Managing 
+# Dependencies, defined abstract as being disassociated from any 
+# specific instance, and that definition still holds true. This new 
+# version of Bicycle will not define a complete bike, just the bits 
+# that all bicycles share. You can expect to create instances of 
+# MountainBike and RoadBike, but Bicycle is not a class to which you 
+# would ever send the new message. It wouldn’t make sense; Bicycle no 
+# longer represents a whole bike.
+
+# Some object-oriented programming languages have syntax that allows 
+# you to explicitly declare classes as abstract. Java, for example, 
+# has the abstract keyword. The Java compiler itself prevents 
+# creation of instances of classes to which this keyword has been 
+# applied. Ruby, in line with its trusting nature, contains no such 
+# keyword and enforces no such restriction. Only good sense prevents 
+# other programmers from creating instances of Bicycle; in real life, 
+# this works remarkably well.
+
+# **
+# Abstract classes exist to be subclassed. This is their sole 
+# purpose. They provide a common repository for behavior that is 
+# shared across a set of subclasses—subclasses that in turn supply 
+# specializations.
+
+# It almost never makes sense to create an abstract superclass with 
+# only one sub-class. Even though the original Bicycle class contains 
+# general and specific behavior and it’s possible to imagine modeling 
+# it as two classes from the very beginning, do not. Regardless of 
+# how strongly you anticipate having other kinds of bikes, that day 
+# may never come. Until you have a specific requirement that forces 
+# you to deal with other bikes, the current Bicycle class is good 
+# enough.
+
+# Even though you now have a requirement for two kinds of bikes, this 
+# still may not be the right moment to commit to inheritance. 
+# Creating a hierarchy has costs; the best way to minimize these 
+# costs is to maximize your chance of getting the abstraction right 
+# before allowing subclasses to depend on it. While the two bikes you 
+# know about supply a fair amount of information about the common 
+# abstraction, three bikes would supply a great deal more. If you 
+# could put this decision off until FastFeet asked for a third kind 
+# of bike, your odds of finding the right abstraction would improve 
+# dramatically.
+
+# A decision to put off the creation of the Bicycle hierarchy commits 
+# you to writing MountainBike and RoadBike classes that duplicate a 
+# great deal of code. A decision to proceed with the hierarchy 
+# accepts the risk that you may not yet have enough information to 
+# identify the correct abstraction. Your choice about whether to wait 
+# or to proceed RoadBike hinges on how soon you expect a third bike 
+# to appear versus how much you expect the duplication to cost. If a 
+# third bike is imminent, it may be best to duplicate the code and 
+# wait for better information. However, if the duplicated code would 
+# need to change every day, it may be cheaper to go ahead and create 
+# the hierarchy. You should wait, if you can, but don’t fear to move 
+# forward based on two concrete cases if this seems best.
+
+############## Page 119 ##############
+class Bicycle
+  # This class is now empty.
+  # All code has been moved to RoadBike.
+end
+
+class RoadBike < Bicycle
+  # Now a subclass of Bicycle
+  # Contains all code from the old Bicycle class.
+end
+
+class MountainBike < Bicycle
+  # Still a subclass of Bicycle (whuch is now empty).
+  # Code has not changed
+end
+
+# This code rearrangement merely moved the problem, as illustrated in 
+# Figure 6.7. Now, instead of containing too much behavior, Bicycle 
+# contains none at all. The common behavior needed by all bicycles is 
+# stuck down inside of RoadBike and is therefore inaccessible to 
+# MountainBike.
+
+# This rearrangement improves your lot because it’s easier to promote 
+# code up to a superclass than to demote it down to a subclass. The 
+# reasons for this are not yet obvious but will become so as the 
+# example proceeds.
+
+road_bike = RoadBike.new(
+  size:       'M',
+  tape_color: 'red'
+)
+
+puts road_bike.size  # => "M"
+
+mountain_bike = MountainBike.new(
+      size:         'S',
+      front_shock:  'Manitou',
+      rear_shock:   'Fox')
+
+puts mountain_bike.size
+# NoMethodError: undefined method `size'
+
+# It’s obvious why this error occurs; neither MountainBike nor any of 
+# its superclasses implement size.
