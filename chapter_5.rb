@@ -451,3 +451,19 @@ end
 # use those expectations to find the duck type. Once you have a duck 
 # type in mind, define its interface, implement that interface where 
 # necessary, and then trust those implementers to behave correctly.
+
+### Documenting Duck Types ###
+# The simplest kind of duck type is one that exists merely as an 
+# agreement about its public interface. This chapter’s example code 
+# implements that kind of duck, where several different classes 
+# implement prepare_trip and can thus be treated like Preparers.
+
+# The Preparer duck type and its public interface are a concrete part 
+# of the design but a virtual part of the code. Preparers are 
+# abstract; this gives them strength as a design tool but this very 
+# abstraction makes the duck type less than obvious in the code.
+
+# When you create duck types you must both document and test their 
+# public interfaces. Fortunately, good tests are the best 
+# documentation, so you are already halfway done; you need only write 
+# the tests.
