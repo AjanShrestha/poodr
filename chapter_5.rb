@@ -272,3 +272,67 @@ end
 # The prepare method can now accept new Preparers without being 
 # forced to change, and it’s easy to create additional Preparers if 
 # the need arises.
+
+
+### Consequences of Duck Typing ###
+# This new implementation has a pleasing symmetry that suggests a 
+# rightness about the design, but the consequences of introducing a 
+# duck type go deeper.
+
+# In the initial example, the prepare method depends on a concrete 
+# class. In this most recent example, prepare depends on a duck type. 
+# The path between these examples leads through a thicket of 
+# complicated, dependent-laden code.
+
+# The concreteness of the first example makes it simple to understand 
+# but danger- ous to extend. The final, duck typed, alternative is 
+# more abstract; it places slightly greater demands on your 
+# understanding but in return offers ease of extension. Now that you 
+# have discovered the duck, you can elicit new behavior from your 
+# application without changing any existing code; you simply turn 
+# another object into a Preparer and pass it into Trip’s prepare 
+# method.
+
+# **
+# This tension between the costs of concretion and the costs of 
+# abstraction is fundamental to object-oriented design. Concrete code 
+# is easy to understand but costly to extend. Abstract code may 
+# initially seem more obscure but, once understood, is far easier to 
+# change. Use of a duck type moves your code along the scale from 
+# more concrete to more abstract, making the code easier to extend 
+# but casting a veil over the underlying class of the duck.
+
+# ***
+# The ability to tolerate ambiguity about the class of an object is 
+# the hallmark of a confident designer. Once you begin to treat your 
+# objects as if they are defined by their behavior rather than by 
+# their class, you enter into a new realm of expressive flexible 
+# design.
+
+
+# Polymorphism
+
+# The term polymorphism is commonly used in object-oriented 
+# programming but its use in everyday speech is rare enough to 
+# warrant a definition.
+# First, a general definition: Morph is the Greek word for form, 
+# morphism is the state of having a form, and polymorphism is the 
+# state of having many forms. Biologists use this word. Darwin’s 
+# famous finches are polymorphic; a single species has many forms.
+# Polymorphism in OOP refers to the ability of many different objects 
+# to respond to the same message. Senders of the message need not 
+# care about the class of the receiver; receivers supply their own 
+# specific version of the behavior.
+# A single message thus has many (poly) forms (morphs).
+# There are a number of ways to achieve polymorphism; duck typing, as 
+# you have surely guessed, is one. Inheritance and behavior sharing 
+# (via Ruby modules) are others, but those are topics for the next 
+# chapters.
+# Polymorphic methods honor an implicit bargain; they agree to be 
+# interchangeable from the sender’s point of view. Any object 
+# implementing a polymorphic method can be substituted for any other; 
+# the sender of the message need not know or care about this 
+# substitution.
+# This substitutability doesn’t happen by magic. When you use 
+# polymorphism it’s up to you to make sure all of your objects are 
+# well-behaved.
