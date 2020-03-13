@@ -185,3 +185,23 @@ puts bike.spares
 # occasionally defensible, its presence might be exposing a costly 
 # flaw in your design. Here the pattern indicates a missing subtype, 
 # better known as a subclass.
+
+### Finding the Embedded Types ###
+
+# The if statement in the spares method above switches on a variable 
+# named style, but it would have been just as natural to call that 
+# variable type or category. Variables with these kinds of names are 
+# your cue to notice the underlying pattern. Type and category are 
+# words perilously similar to those you would use when describing a 
+# class. After all, what is a class if not a category or type?
+
+# The style variable effectively divides instances of Bicycle into 
+# two different kinds of things. These two things share a great deal 
+# of behavior but differ along the style dimension. Some of Bicycle’s 
+# behavior applies to all bicycles, some only to road bikes, and some 
+# only to mountain bikes. This single class contains several 
+# different, but related, types.
+
+# This is the exact problem that inheritance solves; that of highly 
+# related types that share common behavior but differ along some 
+# dimension.
