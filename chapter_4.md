@@ -4,7 +4,7 @@
 
 ## Understanding Interfaces
 
-![Communication Patterns](./images/4.1.png)
+![Communication Patterns](./images/4/4.1.png)
 In the first application, the messages have no apparent pattern. Every object may send any message to any other object. If the messages left visible trails, these trails would eventually draw a woven mat, with each object connected to every other.
 
 In the second application, the messages have a clearly defined pattern. Here the objects communicate in specific and well-defined ways. If these messages left trails, the trails would accumulate to create a set of islands with occasional bridges between them.
@@ -78,8 +78,8 @@ Also, notice now that you have drawn a sequence diagram, this design conversatio
 
 > _This transition from class-based design to message-based design is a turning point in your design career._ The message-based perspective yields more flexible applications than does the class-based perspective. Changing the fundamental design question from “I know I need this class, what should it do?” to **“I need to send this message, who should respond to it?”** is the first step in that direction.
 
-![A simple sequence diagram](./images/4.3.png)
-![Moe talks to trip and bicycle](./images/4.4.png)
+![A simple sequence diagram](./images/4/4.3.png)
+![Moe talks to trip and bicycle](./images/4/4.4.png)
 
 **You don’t send messages because you have objects, you have objects because you send messages.**
 
@@ -87,9 +87,9 @@ Also, notice now that you have drawn a sequence diagram, this design conversatio
 
 > The distinction between a message that asks for what the sender wants and a message that tells the receiver how to behave may seem subtle but the consequences are significant. Understanding this difference is a key part of creating reusable classes with well-defined public interfaces.
 
-![How](./images/4.5.png)
+![How](./images/4/4.5.png)
 
-![What](./images/4.6.png)
+![What](./images/4/4.6.png)
 
 ### Seeking Context Independence
 
@@ -101,7 +101,7 @@ Context is a coat that Trip wears everywhere; any use of Trip, be it for testing
 
 You already know the technique for collaborating with others without knowing who they are—_dependency injection_. The new problem here is for Trip to invoke the correct behavior from Mechanic without knowing what Mechanic does. Trip wants to collaborate with Mechanic while maintaining context independence.
 
-![Seeking Context Independence](./images/4.7.png)
+![Seeking Context Independence](./images/4/4.7.png)
 
 At first glance this seems impossible. Trips have bicycles, bicycles must be prepared, and mechanics prepare bicycles. Having Trip ask Mechanic to prepare a Bicycle seems inevitable.
 
@@ -142,7 +142,7 @@ The realization that you need an as yet undefined object is one that you can arr
 
 Perhaps the application should contain a TripFinder class. Figure 4.8 shows a sequence diagram where a TripFinder is responsible for finding suitable trips.
 
-![Moe asks the TripFinder for a suitable trip](./images/4.8.png)
+![Moe asks the TripFinder for a suitable trip](./images/4/4.8.png)
 
 TripFinder contains all knowledge of what makes a trip suitable. It knows the rules; its job is to do whatever is necessary to respond to this message. It provides a consistent public interface while hiding messy and changeable internal implementation details.
 
