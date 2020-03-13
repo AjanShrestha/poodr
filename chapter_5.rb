@@ -401,3 +401,29 @@ end
 # switches on class; they are the same thing, they cause exactly the 
 # same problems, and they should be corrected using the same 
 # techniques.
+
+#### responds_to? ####
+# Programmers who understand that they should not depend on class 
+# names but who haven’t yet made the leap to duck types are tempted 
+# to replace kind_of? with responds_to?.
+
+############## Page 97 ##############
+if preparer.responds_to?(:prepare_bicycles)
+  preparer.prepare_bicycles(bicycle)
+elsif preparer.responds_to?(:buy_food)
+  preparer.buy_food(customers)
+elsif preparer.responds_to?(:gas_up)
+  preparer.gas_up(vehicle)
+  preparer.fill_water_tank(vehicle)
+end
+
+# While this slightly decreases the number of dependencies, this code 
+# still has too many. The class names are gone but the code is still 
+# very bound to class. What object will know prepare_bicycles other 
+# than Mechanic? Don’t be fooled by the removal of explicit class 
+# references. This example still expects very specific classes.
+
+# Even if you are in a situation where more than one class implements 
+# prepare_bicycles or buy_food, this code pattern still contains 
+# unnecessary dependencies; it controls rather than trusts other 
+# objects.
