@@ -467,3 +467,14 @@ end
 # public interfaces. Fortunately, good tests are the best 
 # documentation, so you are already halfway done; you need only write 
 # the tests.
+
+### Sharing Code Between Ducks ###
+
+# In this chapter, Preparer ducks provide class-specific versions of 
+# the behavior required by their interface. Mechanic, Driver and 
+# TripCoordinator each implement method prepare_trip. This method 
+# signature is the only thing they have in common. They share only 
+# the interface, not the implementation.
+
+# Once you start using duck types, however, you’ll find that classes 
+# that implement them often need to share some behavior in common. 
