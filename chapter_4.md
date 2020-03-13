@@ -277,3 +277,9 @@ Consider what this message chain would look like if you had started out by decid
 The ride method of customer hides implementation details from Trip and reduces both its context and its dependencies, significantly improving the design. When FastFeet changes and begins leading hiking trips it’s much easier to generalize from customer.ride to customer.depart or customer.go than to disentangle the ten- tacles of this message chain from your application.
 
 The train wrecks of Demeter violations are clues that there are objects whose public interfaces are lacking. Listening to Demeter means paying attention to your point of view. If you shift to a message-based perspective, the messages you find will become public interfaces in the objects they lead you to discover. However, if you are bound by the shackles of existing domain objects, you’ll end up assembling their exist- ing public interfaces into long message chains and thus will miss the opportunity to find and construct flexible public interfaces.
+
+## Summary
+
+Object-oriented applications are defined by the messages that pass between objects. This message passing takes place along “public” interfaces; well-defined public inter- faces consist of stable methods that expose the responsibilities of their underlying classes and provide maximal benefit at minimal cost.
+
+Focusing on messages reveals objects that might otherwise be overlooked. When messages are trusting and ask for what the sender wants instead of telling the receiver how to behave, objects naturally evolve public interfaces that are flexible and reusable in novel and unexpected ways.
