@@ -317,3 +317,38 @@ puts mountain_bike.spares
 # **
 # Because design is evolutionary, this situation arises all the time. 
 # The problem here started with the names of these classes.
+
+
+## Finding the Abstraction ##
+
+# In the beginning, there was one idea, a bicycle, and it was modeled 
+# as a single class, Bicycle. The original designer chose a generic 
+# name for an object that was actually slightly more specialized. The 
+# existing Bicycle class doesn’t represent just any kind of bicycle, 
+# it represents a specific kind—a road bike.
+
+# However, now that MountainBike exists, Bicycle’s name is 
+# misleading. These two class names imply inheritance; you 
+# immediately expect MountainBike to be a specialization of Bicycle. 
+# It’s natural to write code that creates MountainBike as a subclass 
+# of Bicycle. This is the right structure, the class names are 
+# correct, but the code in Bicycle is now very wrong.
+
+# Subclasses are specializations of their superclasses. A 
+# MountainBike should be everything a Bicycle is, plus more. Any 
+# object that expects a Bicycle should be able to interact with a 
+# MountainBike in blissful ignorance of its actual class.
+
+# **
+# These are the rules of inheritance; break them at your peril. 
+# For inheritance to work, two things must always be true. 
+#   * First, the objects that you are modeling must truly have a 
+#     generalization–specialization relationship. 
+#   * Second, you must use the correct coding techniques.
+
+# It makes perfect sense to model mountain bike as a specialization 
+# of bicycle; the relationship is correct. However, the code above is 
+# a mess and if propagated will lead to disaster. The current Bicycle 
+# class intermingles general bicycle code with specific road bike 
+# code. It’s time to separate these two things, to move the road bike 
+# code out of Bicycle and into a separate RoadBike subclass.
