@@ -427,3 +427,27 @@ end
 # prepare_bicycles or buy_food, this code pattern still contains 
 # unnecessary dependencies; it controls rather than trusts other 
 # objects.
+
+### Placing Trust in Your Ducks ###
+# Use of kind_of?, is_a?, responds_to?, and case statements that 
+# switch on your classes indicate the presence of an unidentified 
+# duck. In each case the code is effectively saying “I know who you 
+# are and because of that I know what you do.” This knowledge exposes 
+# a lack of trust in collaborating objects and acts as a millstone 
+# around your object’s neck. It introduces dependencies that make 
+# code difficult to change.
+
+# Just as in Demeter violations, this style of code is an indication 
+# that you are missing an object, one whose public interface you have 
+# not yet discovered. 
+# **
+# The fact that the missing object is a duck type instead of a 
+# concrete class matters not at all; it’s the interface that matters, 
+# not the class of the object that implements it.
+
+# Flexible applications are built on objects that operate on trust; 
+# it is your job to make your objects trustworthy. When you see these 
+# code patterns, concentrate on the offending code’s expectations and 
+# use those expectations to find the duck type. Once you have a duck 
+# type in mind, define its interface, implement that interface where 
+# necessary, and then trust those implementers to behave correctly.
