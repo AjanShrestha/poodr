@@ -16,7 +16,7 @@
 # name; if an object quacks like a duck and walks like a duck, then 
 # its class is immaterial, it’s a duck.
 
-## Understanding Duck Typing
+## Understanding Duck Typing ##
 
 # Just as beauty is in the physical world, within your application an 
 # object’s type is in the eye of the beholder. Users of an object 
@@ -336,3 +336,11 @@ end
 # This substitutability doesn’t happen by magic. When you use 
 # polymorphism it’s up to you to make sure all of your objects are 
 # well-behaved.
+
+
+## Writing Code That Relies on Ducks ##
+# Using duck typing relies on your ability to recognize the places 
+# where your application would benefit from across-class interfaces. 
+# It is relatively easy to implement a duck type; your design 
+# challenge is to notice that you need one and to abstract its 
+# interface.
