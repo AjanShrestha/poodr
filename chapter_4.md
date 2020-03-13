@@ -226,3 +226,26 @@ Imagine that Trip’s depart method contains each of the following lines of code
     hash.keys.sort.join(', ')
 
 Each line is a message chain containing a number of dots (periods). These chains are colloquially referred to as train wrecks; each method name represents a train car and the dots are the connections between them. These trains are an indication that you might be violating Demeter.
+
+### Consequences of Violations
+
+Chapter 2 stated that code should be transparent, reasonable, usable and exem- plary. Some of the message chains above fail when judged against TRUE:
+
+- If wheel changes tire or rotate, depart may have to change.Trip has nothing to do with wheel yet changes to wheel might force changes in Trip. This unnecessarily raises the cost of change; the code is not reasonable.
+- Changing tire or rotate may break something in depart. Because Trip is distant and apparently unrelated, the failure will be completely unexpected. This code is not transparent.
+- Trip cannot be reused unless it has access to a customer with a bicycle that has a wheel and a tire. It requires a lot of context and is not easily usable.
+- This pattern of messages will be replicated by others, producing more code with similar problems. This style of code, unfortunately, breeds itself. It is not exemplary.
+
+The risk incurred by Demeter violations is low for stable attributes, this may be the most cost-efficient strategy.
+
+This tradeoff is permitted as long as you are not changing the value of the attrib- ute you retrieve. If depart sends customer.bicycle.wheel.tire with the intent of altering the result, it is not just retrieving an attribute, it is implementing behavior that belongs in Wheel. In this case, customer.bicycle.wheel.tire becomes just like customer.bicycle.wheel.rotate; it’s a chain that reaches across many objects to get to distant behavior. The inherent cost of this coding style is high; this violation should be removed.
+
+The third message chain, hash.keys.sort.join is perfectly reasonable and, despite the abundance of dots, may not be a Demeter violation at all. Instead of eval- uating this phrase by counting the “dots,” evaluate it by checking the types of the intermediate objects.
+
+    hash.keys returns an Enumerable
+    hash.keys.sort also returns an Enumerable
+    hash.keys.sort.join returns a String
+
+By this logic, there is a slight Demeter violation. However, if you can bring yourself to accept that hash.keys.sort.join actually returns an Enumerable of Strings, all of the intermediate objects have the same type and there is no Demeter violation. If you remove the dots from this line of code, your costs may well go up instead of down.
+
+As you can see, Demeter is more subtle than first appears. Its fixed rules are not an end in themselves; like every design principle, it exists in service of your overall goals. Certain “violations” of Demeter reduce your application’s flexibility and main- tainability, while others make perfect sense.
