@@ -41,3 +41,44 @@
 # types back in Chapter 4, Creating Flexible Interfaces. Across-class 
 # types, duck types, have public interfaces that represent a contract 
 # that must be explicit and well-documented.
+
+### Overlooking the Duck
+
+############## Page 87 ##############
+class Trip
+  attr_reader :bicycles, :customers, :vehicle
+
+  # this 'mechanic' argument could be of any class
+  def prepare(mechanic)
+    mechani.prepare_bicycles(bicycles)
+  end
+
+  # ...
+end
+
+# if you happend to pass an instance of *this* class.
+# it works
+class Mechanic
+  def prepare_bicycles(bicycles)
+    bicycles.each{|bicycle| prepare_bicycle(bicycle)}
+  end
+
+  def prepare_bicycle(bicycle)
+    # ...
+  end
+end
+
+# Trip’s prepare method sends message prepare_bicycles to the object 
+# contained in its mechanic parameter. Notice that the Mechanic class 
+# is not referenced; even though the parameter name is mechanic, the 
+# object it contains could be of any class.
+
+# Figure 5.1 contains the corresponding sequence diagram, where an 
+# outside object gets everything started by sending prepare to Trip, 
+# passing along an argument.
+# The prepare method has no explicit dependency on the Mechanic class 
+# but it does depend on receiving an object that can respond to 
+# prepare_bicycles. This dependency is so fundamental that it’s easy 
+# to miss or to discount, but nonetheless, it exists. Trip’s prepare 
+# method firmly believes that its argument contains a preparer of 
+# bicycles.
