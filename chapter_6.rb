@@ -462,5 +462,143 @@ mountain_bike = MountainBike.new(
 puts mountain_bike.size
 # NoMethodError: undefined method `size'
 
+############## Page ?? ##############
+# This is the complete code for example above
+class Bicycle
+  # This class is now empty.
+  # All code has been moved to RoadBike.
+end
+
+class RoadBike < Bicycle
+  attr_reader :size, :tape_color
+
+  def initialize(args)
+    @size       = args[:size]
+    @tape_color = args[:tape_color]
+  end
+
+  def spares
+    { chain:        '10-speed',
+      tire_size:    '23',
+      tape_color:   tape_color}
+  end
+end
+
+class MountainBike < Bicycle
+  attr_reader :front_shock, :rear_shock
+
+  def initialize(args)
+    @front_shock = args[:front_shock]
+    @rear_shock =  args[:rear_shock]
+    super(args)
+  end
+
+  def spares
+    super.merge({rear_shock:  rear_shock})
+  end
+end
+
+road_bike = RoadBike.new(
+              size:       'M',
+              tape_color: 'red' )
+
+puts road_bike.size  # => "M"
+
+mountain_bike = MountainBike.new(
+                  size:         'S',
+                  front_shock:  'Manitou',
+                  rear_shock:   'Fox')
+
+puts mountain_bike.size
+# NoMethodError: undefined method `size'
+
 # It’s obvious why this error occurs; neither MountainBike nor any of 
 # its superclasses implement size.
+
+
+### Promoting Abstract Behavior ###
+
+# The size and spares methods are common to all bicycles. This 
+# behavior belongs in Bicycle’s public interface. Both methods are 
+# currently stuck down in RoadBike; the task here is to move them up 
+# to Bicycle so the behavior can be shared. Because the code dealing 
+# with size is simplest it’s the most natural place to start.
+
+############## Page 121 ##############
+class Bicycle
+  attr_reader :size         # <- promoted from RoadBike
+
+  def initialize(args={})
+    @size = args[:size]     # <- promoted from RoadBike
+  end
+end
+
+class RoadBike < Bicycle
+  attr_reader :tape_color
+
+  def initialize(args)
+    @tape_color = args[:tape_color]
+    super(args)             # <- RoadBike now MUST send 'super'
+  end
+  # ...
+end
+
+# RoadBike now inherits the size method from Bicycle. When a RoadBike 
+# receives size, Ruby itself delegates the message up the superclass 
+# chain, searching for an implementation and finding the one in 
+# Bicycle. This message delegation happens automatically because 
+# RoadBike is a subclass of Bicycle.
+
+############## Page 122 ##############
+road_bike = RoadBike.new(
+  size:       'M',
+  tape_color: 'red' )
+
+road_bike.size  # -> "M"
+
+mountain_bike = MountainBike.new(
+      size:         'S',
+      front_shock:  'Manitou',
+      rear_shock:   'Fox')
+
+mountain_bike.size # -> 'S'
+
+# **
+# You might be tempted to skip the middleman and just leave this bit 
+# of code in Bicycle to begin with, but this 
+# push-everything-down-and-then-pull-some-things- up strategy is an 
+# important part of this refactoring. Many of the difficulties of 
+# inheritance are caused by a failure to rigorously separate the 
+# concrete from the abstract. Bicycle’s original code intermingled 
+# the two. If you begin this refactoring with that first version of 
+# Bicycle, attempting to isolate the concrete code and push it down 
+# to RoadBike, any failure on your part will leave dangerous remnants 
+# of concreteness in the superclass. However, if you start by moving 
+# every bit of the Bicycle code to RoadBike, you can then carefully 
+# identify and promote the abstract parts without fear of leaving 
+# concrete artifacts.
+
+# When deciding between refactoring strategies, indeed, when deciding 
+# between design strategies in general, it’s useful to ask the 
+# question: “What will happen if I’m wrong?” In this case, if you 
+# create an empty superclass and push the abstract bits of code up 
+# into it, the worst that can happen is that you will fail to find 
+# and promote the entire abstraction.
+
+# This “promotion” failure creates a simple problem, one that is 
+# easily found and easily fixed. When a bit of the abstraction gets 
+# left behind, the oversight becomes visible as soon as another 
+# subclass needs the same behavior. In order to give all subclasses 
+# access to the behavior you’ll be forced to either duplicate the 
+# code (in each subclass) or promote it (to the common superclass). 
+# Because even the most junior programmers have been taught not to 
+# duplicate code, this problem gets noticed no matter who works on 
+# the application in the future. The natural course of events is such 
+# that the abstraction gets identified and promoted, and the code 
+# improves. Promotion failures thus have low consequences.
+
+
+# **
+# The general rule for refactoring into a new inheritance hierarchy 
+# is to arrange code so that you can promote abstractions rather than 
+# demote concretions.
