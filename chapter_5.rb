@@ -591,3 +591,15 @@ end
 # contain type declarations; they can infer an object’s type from its 
 # context.
 # • Metaprogramming is a desirable language feature.
+
+## Summary ##
+
+# Messages are at the center of object-oriented applications and they 
+# pass among objects along public interfaces. Duck typing detaches 
+# these public interfaces from specific classes, creating virtual 
+# types that are defined by what they do instead of by who they are.
+
+# Duck typing reveals underlying abstractions that might otherwise be 
+# invisible. Depending on these abstractions reduces risk and 
+# increases flexibility, making your application cheaper to maintain 
+# and easier to change.
