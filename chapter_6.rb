@@ -602,3 +602,62 @@ mountain_bike.size # -> 'S'
 # The general rule for refactoring into a new inheritance hierarchy 
 # is to arrange code so that you can promote abstractions rather than 
 # demote concretions.
+
+### Separating Abstract from Concrete ###
+
+############## Page ??? ##############
+class MountainBike < Bicycle
+  # ...
+  def spares
+    super.merge({rear_shock:  rear_shock})
+  end
+end
+
+############## Page ??? ##############
+mountain_bike.spares
+# NoMethodError: super: no superclass method `spares'
+
+# Fixing this problem obviously requires adding a spares method to 
+# Bicycle, but doing so is not as simple as promoting the existing 
+# code from RoadBike.
+
+# RoadBike’s spares implementation knows far too much. The chain and 
+# tire_size attributes are common to all bicycles, but tape_color 
+# should be known only to road bikes. The hard-coded chain and 
+# tire_size values are not the correct defaults for every possible 
+# subclass. This method has many problems and cannot be promoted as 
+# is.
+
+# It mixes a bunch of different things. When this awkward mix was 
+# hidden inside a single method of a single class it was survivable, 
+# even (depending on your tolerance) ignorable, but now that you 
+# would like to share only part of this behavior, you must untangle 
+# the mess and separate the abstract parts from the concrete parts. 
+# The abstractions will be promoted up to Bicycle, the concrete parts 
+# will remain in RoadBike.
+
+# Here are the requirements for promoting bicycle share, chain and 
+# tire_size:
+# • Bicycles have a chain and a tire size.
+# • All bicycles share the same default for chain.
+# • Subclasses provide their own default for tire size.
+# • Concrete instances of subclasses are permitted to ignore defaults 
+#   and supply instance-specific values.
+
+############## Page 125 ##############
+class Bicycle
+  attr_reader :size, :chain, :tire_size
+
+  def initialize(args={})
+    @size       = args[:size]
+    @chain      = args[:chain]
+    @tire_size  = args[:tire_size]
+  end
+  # ...
+end
+
+# RoadBike and MountainBike inherit the attr_reader definitions in 
+# Bicycle and both send super in their initialize methods. All bikes 
+# now understand size, chain, and tire_size and each may supply 
+# subclass-specific values for these attributes. The first and last 
+# requirements listed above have been met.
