@@ -249,3 +249,11 @@ The third message chain, hash.keys.sort.join is perfectly reasonable and, despit
 By this logic, there is a slight Demeter violation. However, if you can bring yourself to accept that hash.keys.sort.join actually returns an Enumerable of Strings, all of the intermediate objects have the same type and there is no Demeter violation. If you remove the dots from this line of code, your costs may well go up instead of down.
 
 As you can see, Demeter is more subtle than first appears. Its fixed rules are not an end in themselves; like every design principle, it exists in service of your overall goals. Certain “violations” of Demeter reduce your application’s flexibility and main- tainability, while others make perfect sense.
+
+### Avoiding Violations
+
+One common way to remove “train wrecks” from code is to use delegation to avoid the “dots.” In object-oriented terms, to delegate a message is to pass it on to another object, often via a wrapper method. The wrapper method encapsulates, or hides, knowledge that would otherwise be embodied in the message chain.
+
+There are a number of ways to accomplish delegation. Ruby contains delegate.rb and forwardable.rb and the Ruby on Rails framework includes the delegate method. Each of these exists to make it easy for an object to automatically intercept a message sent to self and to instead send it somewhere else.
+
+Delegation is tempting as a solution to the Demeter problem because it removes the visible evidence of violations. This technique is sometimes useful, but beware, it can result in code that obeys the letter of the law while ignoring its spirit. _Using delegation to hide tight coupling is not the same as decoupling the code._
