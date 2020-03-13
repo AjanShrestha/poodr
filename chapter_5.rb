@@ -352,3 +352,33 @@ end
 # • Case statements that switch on class 
 # • kind_of? and is_a?
 # • responds_to?
+
+#### Case Statements That Switch on Class ####
+############## Page 96 ##############
+class Trip
+  attr_reader :bicycles, :customers, :vehicle
+
+  def prepare(preparers)
+    preparers.each {|preparer|
+      case preparer
+      when Mechanic
+        preparer.prepare_bicycles(bicycles)
+      when TripCoordinator
+        preparer.buy_food(customers)
+      when Driver
+        preparer.gas_up(vehicle)
+        preparer.fill_water_tank(vehicle)
+      end
+    }
+  end
+end
+
+# When you see this pattern you know that all of the preparers must 
+# share something in common; they arrive here because of that common 
+# thing. Examine the code and ask yourself, “What is it that prepare 
+# wants from each of its arguments?”
+# The answer to that question suggests the message you should send; 
+# this message begins to define the underlying duck type.
+# Here the prepare method wants its arguments to prepare the trip. 
+# Thus,prepare_trip becomes a method in the public interface of the 
+# new Preparer duck.
