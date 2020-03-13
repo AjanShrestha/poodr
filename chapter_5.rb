@@ -344,3 +344,11 @@ end
 # It is relatively easy to implement a duck type; your design 
 # challenge is to notice that you need one and to abstract its 
 # interface.
+
+### Recognizing Hidden Ducks ### 
+# Many times unacknowledged duck types already exist, lurking within 
+# existing code. Several common coding patterns indicate the presence 
+# of a hidden duck. You can replace the following with ducks:
+# • Case statements that switch on class 
+# • kind_of? and is_a?
+# • responds_to?
