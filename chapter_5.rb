@@ -529,3 +529,33 @@ end
 # Neither of these considerations should prevent you from monkey 
 # patching Ruby at need; however, you must be able to eloquently 
 # defend this design decision. The standard of proof is high.
+
+
+## Conquering a Fear of Duck Typing
+
+### Subverting Duck Types with Static Typing ###
+# Relying on dynamic typing makes some people uncomfortable. For 
+# some, this discomfort is caused by a lack of experience, for 
+# others, by a belief that static typing is more reliable.
+
+# The lack-of-experience problem cures itself, but the belief that 
+# static typing is fundamentally preferable often persists because it 
+# is self-reinforcing. Programmers who fear dynamic typing tend to 
+# check the classes of objects in their code; these very checks 
+# subvert the power of dynamic typing, making it impossible to use 
+# duck types.
+
+# Methods that cannot behave correctly unless they know the classes 
+# of their arguments will fail (with type errors) when new classes 
+# appear. Programmers who believe in static typing take these 
+# failures as proof that more type checking is needed. When more 
+# checks are added, the code becomes less flexible and even more 
+# dependent on class. The new dependencies cause additional type 
+# failures, and the programmer responds to these failures by adding 
+# yet more type checking. Anyone caught in this loop will naturally 
+# have a hard time believing that the solution to their type problem 
+# is to remove type checking altogether.
+
+# Duck typing provides a way out of this trap. It removes the 
+# dependencies on class and thus avoids the subsequent type failures. 
+# It reveals stable abstractions on which your code can safely depend.
