@@ -382,3 +382,22 @@ end
 # Here the prepare method wants its arguments to prepare the trip. 
 # Thus,prepare_trip becomes a method in the public interface of the 
 # new Preparer duck.
+
+#### kind_of? and is_a? ####
+# The kind_of? and is_a? messages (they are synonymous) also check 
+# class.
+
+############## Page 97 ##############
+if preparer.kind_of?(Mechanic)
+  preparer.prepare_bicycles(bicycle)
+elsif preparer.kind_of?(TripCoordinator)
+  preparer.buy_food(customers)
+elsif preparer.kind_of?(Driver)
+  preparer.gas_up(vehicle)
+  preparer.fill_water_tank(vehicle)
+end
+
+# Using kind_of? is no different than using a case statement that 
+# switches on class; they are the same thing, they cause exactly the 
+# same problems, and they should be corrected using the same 
+# techniques.
