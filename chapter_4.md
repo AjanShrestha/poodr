@@ -257,3 +257,23 @@ One common way to remove “train wrecks” from code is to use delegation to av
 There are a number of ways to accomplish delegation. Ruby contains delegate.rb and forwardable.rb and the Ruby on Rails framework includes the delegate method. Each of these exists to make it easy for an object to automatically intercept a message sent to self and to instead send it somewhere else.
 
 Delegation is tempting as a solution to the Demeter problem because it removes the visible evidence of violations. This technique is sometimes useful, but beware, it can result in code that obeys the letter of the law while ignoring its spirit. _Using delegation to hide tight coupling is not the same as decoupling the code._
+
+### Listening to Demeter
+
+Demeter is trying to tell you something and it isn’t “use more delegation.”
+
+Message chains like customer.bicycle.wheel.rotate occur when your design thoughts are unduly influenced by objects you already know. Your familiarity with the public interfaces of known objects may lead you to string together long message chains to get at distant behavior.
+
+Reaching across disparate objects to invoke distant behavior is tantamount to saying, “there’s some behavior way over there that I need right here and I know how to go get it.” The code knows not only what it wants (to rotate) but how to navigate through a bunch of intermediate objects to reach the desired behavior. Just as Trip, earlier, knew how Mechanic should prepare a bike and so was tightly coupled to Mechanic, here the depart method knows how to navigate through a series of objects to make a wheel rotate and therefore is tightly coupled to your overall object structure.
+
+This coupling causes all kinds of problems. The most obvious is that it raises the risk that Trip will be forced to change because of an unrelated change some- where in the message chain. However, there’s another problem here that is even more serious.
+
+_When the depart method knows this chain of objects, it binds itself to a very specific implementation and it cannot be reused in any other context. Customers must always have Bicycles, which in turn must have Wheels that rotate._
+
+Consider what this message chain would look like if you had started out by deciding what depart wants from customer. From a message-based point of view, the answer is obvious:
+
+    customer.ride
+
+The ride method of customer hides implementation details from Trip and reduces both its context and its dependencies, significantly improving the design. When FastFeet changes and begins leading hiking trips it’s much easier to generalize from customer.ride to customer.depart or customer.go than to disentangle the ten- tacles of this message chain from your application.
+
+The train wrecks of Demeter violations are clues that there are objects whose public interfaces are lacking. Listening to Demeter means paying attention to your point of view. If you shift to a message-based perspective, the messages you find will become public interfaces in the objects they lead you to discover. However, if you are bound by the shackles of existing domain objects, you’ll end up assembling their exist- ing public interfaces into long message chains and thus will miss the opportunity to find and construct flexible public interfaces.
