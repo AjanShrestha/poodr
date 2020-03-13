@@ -478,3 +478,54 @@ end
 
 # Once you start using duck types, however, you’ll find that classes 
 # that implement them often need to share some behavior in common. 
+
+### Choose Your Ducks Wisely ###
+
+# If sending a message based on the class of the receiving object is 
+# the death knell for your application, why is this code acceptable?
+
+############## Page 99 ##############
+# A convenience wrapper for <tt>find(:first, *args)</tt>.
+# You can pass in all the same arguments to this
+# method as you can to <tt>find(:first)</tt>.
+def first(*args)
+  if args.any?
+    if args.first.kind_of?(Integer) ||
+        (loaded? && !args.first.kind_of?(Hash))
+      to_a.first(*args)
+    else
+      apply_finder_options(args.first).first
+    end
+  else
+    find_first
+  end
+end
+# !x
+
+# The major difference between this example and the previous ones is 
+# the stability of the classes that are being checked. When first 
+# depends on Integer and Hash, it is depending on core Ruby classes 
+# that are far more stable than it is. The likelihood of Integer or 
+# Hash changing in such a way as to force first to change is 
+# vanishingly small. This dependency is safe. There probably is a 
+# duck type hidden somewhere in this code but it will likely not 
+# reduce your overall application costs to find and implement it.
+
+# From this example you can see that the decision to create a new 
+# duck type relies on judgment. The purpose of design is to lower 
+# costs; bring this measuring stick to every situation. If creating a 
+# duck type would reduce unstable dependencies, do so. Use your best 
+# judgment.
+  
+# The above example’s underlying duck spans Integer and Hash and 
+# therefore its implementation would require making changes to Ruby 
+# base classes. Changing base classes is known as monkey patching and 
+# is a delightful feature of Ruby but can be perilous in untutored 
+# hands.
+  
+# Implementing duck types across your own classes is one thing, 
+# changing Ruby base classes to introduce new duck types is quite 
+# another. The tradeoffs are different; the risks are greater. 
+# Neither of these considerations should prevent you from monkey 
+# patching Ruby at need; however, you must be able to eloquently 
+# defend this design decision. The standard of proof is high.
