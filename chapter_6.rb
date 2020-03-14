@@ -826,3 +826,18 @@ bent = RecumbentBike.new
 # big effects and it is this attention to detail that marks you as a 
 # serious programmer. Always document template method requirements by 
 # implementing matching methods that raise useful errors.
+
+
+
+## Managing Coupling Between Superclasses and Subclasses ##
+# Bicycle now contains most of the abstract bicycle behavior. It has 
+# code to manage overall bike size, chain, and tire size, and its 
+# structure invites subclasses to supply common defaults for these 
+# attributes. The superclass is almost complete; it’s missing only an 
+# implementation of spares.
+
+# This spares superclass implementation can be written in a number of 
+# ways; the alternatives vary in how tightly they couple the 
+# subclasses and superclasses together. Managing coupling is 
+# important; tightly coupled classes stick together and may be 
+# impossible to change independently.
