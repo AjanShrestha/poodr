@@ -121,3 +121,83 @@
 # This implementation cries out for a simple and obvious improvement, 
 # one suggested by the pattern of the code. Instead of knowing 
 # details about other classes, the Schedule should send them messages.
+
+### Removing Unnecessary Dependencies ###
+
+# The fact that the Schedule checks many class names to determine 
+# what value to place in one variable suggests that the variable name 
+# should be turned into a message, which in turn should be sent to 
+# each incoming object.
+
+#### Discovering the Schedulable Duck Type ####
+
+# Figure 7.2 shows a sequence diagram for new code that removes the 
+# check on class from the schedulable? method and alters the method 
+# to instead send the lead_days message to its incoming target 
+# argument. This change replaces an if statement that checks the 
+# class of an object with a message sent to that same object. It 
+# simplifies the code and pushes responsibility for knowing the 
+# correct number of lead days into the last object that could 
+# possibly know the correct answer, which is exactly where this 
+# responsibility belongs.
+
+# A close look at Figure 7.2 reveals something interesting. Notice 
+# that this diagram contains a box labeled “the target.” The boxes on 
+# sequence diagrams are meant to represent objects and are commonly 
+# named after classes, as in “the Schedule” or “a Bicycle.” In Figure 
+# 7.2, the Schedule intends to send lead_days to its target, but 
+# target could be an instance of any of a number of classes. Because 
+# target’s class is unknown, it’s not obvious how to label the box 
+# for the receiver of this message.
+
+# The easiest way to draw the diagram is to sidestep this issue by 
+# labeling the box after the name of the variable and sending the 
+# lead_days message to that “target” without being precise about its 
+# class. The Schedule clearly does not care about target’s class, 
+# instead it merely expects it to respond to a specific message. This 
+# message-based expectation transcends class and exposes a role, one 
+# played by all targets and made explicitly visible by the sequence 
+# diagram.
+
+# *
+# The Schedule expects its target to behave like something that 
+# understands lead_days, that is, like something that is “schedulable.
+# ” You have discovered a duck type.
+
+# **
+#### Letting Objects Speak for Themselves ####
+
+# Discovering and using this duck type improves the code by removing 
+# the Schedule’s dependency on specific class names, which makes the 
+# application more flexible and easier to maintain. However, Figure 7.
+# 2 still contains unnecessary dependencies that should be removed.
+
+# It’s easiest to illustrate these dependencies with an extreme 
+# example. Imagine a StringUtils class that implements utility 
+# methods for managing strings. You can ask StringUtils if a string 
+# is empty by sending StringUtils.empty?(some_string).
+
+# If you have written much object-oriented code you will find this 
+# idea ridiculous. Using a separate class to manage strings is 
+# patently redundant; strings are objects, they have their own 
+# behavior, they manage themselves. Requiring that other objects know 
+# about a third party, StringUtils, to get behavior from a string 
+# complicates the code by adding an unnecessary dependency.
+
+# This specific example illustrates the general idea that objects 
+# should manage themselves; they should contain their own behavior. 
+# If your interest is in object B, you should not be forced to know 
+# about object A if your only use of it is to find things out about B.
+
+# The sequence diagram in Figure 7.2 violates this rule. The 
+# instigator is trying to ascertain if the target object is 
+# schedulable. Unfortunately, it doesn’t ask this question of target 
+# itself, it instead asks a third party, Schedule. Asking Schedule if 
+# a target is schedulable is just like asking StringUtils if a string 
+# is empty. It forces the instigator to know about and thus depend 
+# upon the Schedule, even though its only real interest is in the 
+# target.
+
+# Just as strings respond to empty? and can speak for themselves, 
+# targets should respond to schedulable?. The schedulable? method 
+# should be added to the interface of the Schedulable role.
