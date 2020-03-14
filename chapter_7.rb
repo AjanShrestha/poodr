@@ -16,3 +16,19 @@
 # technique is free, creating the most cost-effective application 
 # requires making informed tradeoffs between the relative costs and 
 # likely benefits of alternatives.
+
+## Understanding Roles ##
+
+# Some problems require sharing behavior among otherwise unrelated 
+# objects. This common behavior is orthogonal to class; it’s a role 
+# an object plays. Many of the roles needed by an application will be 
+# obvious at design time, but it’s also common to discover 
+# unanticipated roles as you write the code.
+
+# When formerly unrelated objects begin to play a common role, they 
+# enter into a relationship with the objects for whom they play the 
+# role. These relationships are not as visible as those created by 
+# the subclass/superclass requirements of classical inheri- tance but 
+# they exist nonetheless. Using a role creates dependencies among the 
+# objects involved and these dependencies introduce risks that you 
+# must take into account when deciding among design options.
