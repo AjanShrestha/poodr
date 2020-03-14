@@ -91,3 +91,33 @@
 # • Those implemented in any module that has been added to it
 # • Those implemented in all modules added to any object above it in 
 #   the hierarchy
+
+### Organizing Responsibilities ###
+
+# Determining if an unscheduled bike, mechanic, or vehicle is 
+# available to participate in a trip is not as simple as looking to 
+# see if it’s idle throughout the interval during which the trip is 
+# scheduled. These real-world things need a bit of downtime between 
+# trips, they cannot finish a trip on one day and start another the 
+# next. Bicycles and motor vehicles must undergo maintenance, and 
+# mechanics need a rest from being nice to customers and a chance to 
+# do their laundry.
+# The requirements are that bicycles have a minimum of one day 
+# between trips, vehicles a minimum of three days, and mechanics, 
+# four days.
+
+
+# Figure 7.1 shows an implementation where the Schedule itself takes 
+# responsibility for knowing the correct lead time. The schedulable? 
+# method knows all the possible values and it checks the class of its 
+# incoming target argument to decide which lead time to use.
+
+# You’ve seen the pattern of checking class to know what message to 
+# send; here the Schedule checks class to know what value to use. In 
+# both cases Schedule knows too much. This knowledge doesn’t belong 
+# in Schedule, it belongs in the classes whose names Schedule is 
+# checking.
+
+# This implementation cries out for a simple and obvious improvement, 
+# one suggested by the pattern of the code. Instead of knowing 
+# details about other classes, the Schedule should send them messages.
