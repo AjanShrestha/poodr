@@ -661,3 +661,82 @@ end
 # now understand size, chain, and tire_size and each may supply 
 # subclass-specific values for these attributes. The first and last 
 # requirements listed above have been met.
+
+### Using the Template Method Pattern ###
+
+# This next change alters Bicycle’s initialize method to send 
+# messages to get defaults. 
+
+# While wrapping the defaults in methods is good practice in general, 
+# these new message sends serve a dual purpose. Bicycle’s main goal 
+# in sending these messages is to give subclasses an opportunity to 
+# contribute specializations by overriding them.
+
+# **
+# This technique of defining a basic structure in the superclass and 
+# sending messages to acquire subclass-specific contributions is 
+# known as the template method pattern.
+
+# In the following code, MountainBike and RoadBike take advantage of 
+# only one of these opportunities for specialization. Both implement 
+# default_tire_size, but neither implements default_chain. Each 
+# subclass thus supplies its own default for tire size but inherits 
+# the common default for chain.
+
+############## Page 126 ##############
+class Bicycle
+  attr_reader :size, :chain, :tire_size
+
+  def initialize(args={})
+    @size       = args[:size]
+    @chain      = args[:chain]      || default_chain
+    @tire_size  = args[:tire_size]  || default_tire_size
+  end
+
+  def default_chain       # <- common default
+    '10-speed'
+  end
+end
+
+class RoadBike <  Bicycle
+  # ...
+  def default_tire_size   # <- subclass default
+    '23'
+  end
+end
+
+class MountainBike < Bicycle
+  # ...
+  def default_tire_size   # <- subclass default
+    '2.1'
+  end
+end
+
+# Bicycle now provides structure, a common algorithm if you will, for 
+# its subclasses. Where it permits them to influence the algorithm, 
+# it sends messages. Subclasses contribute to the algorithm by 
+# implementing matching methods.
+
+# All bicycles now share the same default for chain but use different 
+# defaults for tire size
+
+############## Page 126 ##############
+road_bike = RoadBike.new(
+  size:       'M',
+  tape_color: 'red' )
+
+puts road_bike.tire_size     # => '23'
+puts road_bike.chain         # => "10-speed"
+
+mountain_bike = MountainBike.new(
+      size:         'S',
+      front_shock:  'Manitou',
+      rear_shock:   'Fox')
+
+puts mountain_bike.tire_size # => '2.1'
+puts road_bike.chain         # => "10-speed"
+
+# **
+# It’s too early to celebrate this success, however, because there’s 
+# still something wrong with the code. It contains a booby trap, 
+# awaiting the unwary.
