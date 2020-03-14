@@ -740,3 +740,89 @@ puts road_bike.chain         # => "10-speed"
 # It’s too early to celebrate this success, however, because there’s 
 # still something wrong with the code. It contains a booby trap, 
 # awaiting the unwary.
+
+### Implementing Every Template Method ###
+
+# Bicycle’s initialize method sends default_tire_size but Bicycle 
+# itself does not implement it. This omission can cause problems 
+# downstream. Imagine that FastFeed adds another new bicycle type, 
+# the recumbent. Recumbents are low, long bicycles that place the 
+# rider in a laid-back, reclining position; these bikes are fast and 
+# easy on the rider’s back and neck.
+
+# What happens if some programmer innocently creates a new 
+# RecumbentBike subclass but neglects to supply a default_tire_size 
+# implementation?
+
+############## Page 127 ##############
+class RecumbentBike < Bicycle
+  def default_chain
+    '9-speed'
+  end
+end
+
+bent = RecumbentBike.new
+# NameError: undefined local variable or method
+#   `default_tire_size'
+
+############## Page ??? ##############
+  # This line of code is a time bomb
+  @tire_size  = args[:tire_size]  || default_tire_size
+
+# The original designer of the hierarchy rarely encounters this 
+# problem. She wrote Bicycle; she understands the requirements that 
+# subclasses must meet. The existing code works. These errors occur 
+# in the future, when the application is being changed to meet a new 
+# requirement, and are encountered by other programmers, ones who 
+# understand far less about what’s going on.
+
+# The root of the problem is that Bicycle imposes a requirement upon 
+# its subclasses that is not obvious from a glance at the code. As 
+# Bicycle is written, subclasses must implement default_tire_size. 
+# Innocent and well-meaning subclasses like RecumbentBike may fail 
+# because they do not fulfill requirements of which they are unaware.
+
+# **
+# A world of potential hurt can be assuaged, in advance, by following 
+# one simple rule. Any class that uses the template method pattern 
+# must supply an implementation for every message it sends,
+
+
+############## Page 128 ##############
+class Bicycle
+  # ...
+  def default_tire_size
+    raise NotImplementedError
+  end
+end
+
+# Explicitly stating that subclasses are required to implement a 
+# message provides useful documentation for those who can be relied 
+# upon to read it and useful error messages for those who cannot.
+
+############## Page 128 ##############
+bent = RecumbentBike.new
+#  NotImplementedError: NotImplementedError
+
+############## Page 128 ##############
+class Bicycle
+  # ...
+  def default_tire_size
+    raise NotImplementedError,
+          "This #{self.class} cannot respond to:"
+  end
+end
+
+############## Page 129 ##############
+bent = RecumbentBike.new
+#  NotImplementedError:
+#    This RecumbentBike cannot respond to:
+#	     `default_tire_size'
+
+# **
+# Creating code that fails with reasonable error messages takes minor 
+# effort in the present but provides value forever. Each error 
+# message is a small thing, but small things accumulate to produce 
+# big effects and it is this attention to detail that marks you as a 
+# serious programmer. Always document template method requirements by 
+# implementing matching methods that raise useful errors.
