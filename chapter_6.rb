@@ -841,3 +841,221 @@ bent = RecumbentBike.new
 # subclasses and superclasses together. Managing coupling is 
 # important; tightly coupled classes stick together and may be 
 # impossible to change independently.
+
+### Understanding Coupling ###
+
+# This first implementation of spares is simplest to write but 
+# produces the most tightly coupled classes.
+
+############## Page 130 ##############
+class RoadBike < Bicycle
+  #
+  def spares
+    { chain:        '10-speed',
+      tire_size:    '23',
+      tape_color:   tape_color}
+  end
+end
+
+# This method is a mishmash of different things and the last attempt 
+# at promoting it took a detour to clean up the code. That detour 
+# extracted the hard-coded values for chain and tire into variables 
+# and messages, and promoted just those parts up the Bicycle. The 
+# methods that deal with chain and tire size are now available in the 
+# superclass.
+
+
+############## Page 130 ##############
+class MountainBike < Bicycle
+  #
+  def spares
+    super.merge({rear_shock:  rear_shock})
+  end
+end
+
+# MountainBike’s spares method sends super; it expects one of its 
+# superclasses to implement spares. MountainBike merges its own spare 
+# parts hash into the result returned by super, clearly expecting 
+# that result to also be a hash.
+
+############## Page 130 ##############
+class Bicycle
+  #...
+  def spares
+    { tire_size:  tire_size,
+      chain:      chain}
+  end
+end
+
+# Given that Bicycle can now send messages to get chain and tire size 
+# and that its spares implementation ought to return a hash, adding 
+# the following spares method meets MountainBike’s needs.
+
+# Once this method is placed in Bicycle all of MountainBike works. 
+# Bringing RoadBike along is merely a matter of changing its spares 
+# implementation to mirror MountainBike’s, that is, replacing the 
+# code for chain and tire size with a send to super and adding the 
+# road bike specializations to the resulting hash.
+
+############## Page 131 ##############
+class Bicycle
+  attr_reader :size, :chain, :tire_size
+
+  def initialize(args={})
+    @size       = args[:size]
+    @chain      = args[:chain]      || default_chain
+    @tire_size  = args[:tire_size]  || default_tire_size
+  end
+
+  def spares
+    { tire_size:  tire_size,
+      chain:      chain}
+  end
+
+  def default_chain
+    '10-speed'
+  end
+
+  def default_tire_size
+    raise NotImplememtedError
+  end
+end
+
+class RoadBike < Bicycle
+  attr_reader :tape_color
+
+  def initialize(args)
+    @tape_color = args[:tape_color]
+    super(args)
+  end
+
+  def spares
+    super.merge({ tape_color: tape_color})
+  end
+
+  def default_tire_size
+    '23'
+  end
+end
+
+class MountainBike < Bicycle
+  attr_reader :front_shock, :rear_shock
+
+  def initialize(args)
+    @front_shock = args[:front_shock]
+    @rear_shock =  args[:rear_shock]
+    super(args)
+  end
+
+  def spares
+    super.merge({rear_shock: rear_shock})
+  end
+
+  def default_tire_size
+    '2.1'
+  end
+end
+
+############## Page ??? ##############
+##### Results for the above
+road_bike = RoadBike.new(
+  size:       'M',
+  tape_color: 'red' )
+
+put road_bike.spares
+# -> {:tire_size   => "23",
+#     :chain       => "10-speed",
+#     :tape_color  => "red"}
+
+mountain_bike = MountainBike.new(
+      size:         'S',
+      front_shock:  'Manitou',
+      rear_shock:   'Fox')
+
+puts mountain_bike.spares
+# -> {:tire_size   => "2.1",
+#     :chain       => "10-speed",
+#     :rear_shock  => "Fox"}
+
+# Notice that the code follows a discernible pattern. Every template 
+# method sent by Bicycle is implemented in Bicycle itself, and 
+# MountainBike and RoadBike both send super in their initialize and 
+# spares methods.
+
+# This class hierarchy works, and you might be tempted to stop right 
+# here. However, just because it works doesn’t guarantee that it’s 
+# good enough. It still contains a booby trap worth removing.
+
+# **
+# Notice that the MountainBike and RoadBike subclasses follow a 
+# similar pattern. They each know things about themselves (their 
+# spare parts specializations) and things about their superclass 
+# (that it implements spares to return a hash and that it responds to 
+# initialize).
+# Knowing things about other classes, as always, creates dependencies 
+# and dependencies couple objects together. The dependencies in the 
+# code above are also the booby traps; both are created by the sends 
+# of super in the subclasses.
+
+############## Page 133 ##############
+class RecumbentBike < Bicycle
+  attr_reader :flag
+
+  def initialize(args)
+    @flag = args[:flag]  # forgot to send 'super'
+  end
+
+  def spares
+    super.merge({flag: flag})
+  end
+
+  def default_chain
+    '9-speed'
+  end
+
+  def default_tire_size
+    '28'
+  end
+end
+
+bent = RecumbentBike.new(flag: 'tall and orange')
+bent.spares
+# -> {:tire_size => nil, <- didn't get initialized
+#     :chain     => nil,
+#     :flag      => "tall and orange"}
+
+# When RecumbentBike fails to send super during initialize it misses 
+# out on the common initialization provided by Bicycle and does not 
+# get a valid size, chain, or tire size. This error can manifest at 
+# a time and place far distant from its cause, making it very hard 
+# to debug.
+
+# A similarly devilish problem occurs if RecumbentBike forgets to 
+# send super in its spares method. Nothing blows up, instead the 
+# spares hash is just wrong and this wrongness may not become 
+# apparent until a Mechanic is standing by the road with a broken 
+# bike, searching the spare parts bin in vain.
+
+# Any programmer can forget to send super and therefore cause these 
+# errors, but the primary culprits (and the primary victims) are 
+# programmers who don’t know the code well but are tasked, in the 
+# future, with creating new subclasses of Bicycle.
+
+# **
+# The pattern of code in this hierarchy requires that subclasses not 
+# only know what they do but also how they are supposed to interact 
+# with their superclass. It makes sense that subclasses know the 
+# specializations they contribute (they are obviously the only 
+# classes who can know them), but forcing a subclass to know how to 
+# interact with its abstract superclass causes many problems.
+# It pushes knowledge of the algorithm down into the subclasses, 
+# forcing each to explicitly send super to participate. It causes 
+# duplication of code across subclasses, requiring that all send 
+# super in exactly the same places. And it raises the chance that 
+# future programmers will create errors when writing new subclasses, 
+# because programmers can be relied upon to include the correct 
+# specializations but can easily forget to send super.
+# When a subclass sends super it’s effectively declaring that it 
+# knows the algorithm; it depends on this knowledge. If the 
+# algorithm changes, then the subclasses may break even if their own 
+# specializations are not otherwise affected.
