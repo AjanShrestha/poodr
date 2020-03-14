@@ -917,7 +917,7 @@ class Bicycle
   end
 
   def default_tire_size
-    raise NotImplememtedError
+    raise NotImplementedError
   end
 end
 
@@ -1059,3 +1059,319 @@ bent.spares
 # knows the algorithm; it depends on this knowledge. If the 
 # algorithm changes, then the subclasses may break even if their own 
 # specializations are not otherwise affected.
+
+## Decoupling Subclasses Using Hook Messages ##
+
+# **
+# All of these problems can be avoided with one final refactoring. 
+# Instead of allowing subclasses to know the algorithm and requiring 
+# that they send super, superclasses can instead send hook messages, 
+# ones that exist solely to provide subclasses a place to contribute 
+# information by implementing matching methods. This 
+# strategy removes knowledge of the algorithm from the subclass and 
+# returns control to the superclass.
+
+# In the following example, this technique is used to give 
+# subclasses a way to contribute to initialization. Bicycle’s 
+# initialize method now sends post_initialize and, as always, 
+# implements the matching method, one that in this case does nothing.
+
+############## Page 134 ##############
+class Bicycle
+
+  def initialize(args={})
+    @size       = args[:size]
+    @chain      = args[:chain]     || default_chain
+    @tire_size  = args[:tire_size] || default_tire_size
+
+    post_initialize(args)    # Bicycle both sends
+  end
+
+  def post_initialize(args)  # and implements this
+    nil
+  end
+  # ...
+end
+
+class RoadBike < Bicycle
+
+  def post_initialize(args)         # RoadBike can
+    @tape_color = args[:tape_color] # optionally
+  end                               # override it
+  # ...
+end
+
+
+############## Page ??? ##############
+# full listing for above
+class Bicycle
+  attr_reader :size, :chain, :tire_size
+
+  def initialize(args={})
+    @size       = args[:size]
+    @chain      = args[:chain]     || default_chain
+    @tire_size  = args[:tire_size] || default_tire_size
+    post_initialize(args)
+  end
+
+  def post_initialize(args)
+    nil
+  end
+
+  def spares
+    { tire_size:  tire_size,
+      chain:      chain}
+  end
+
+  def default_chain
+    '10-speed'
+  end
+
+  def default_tire_size
+    raise NotImplementedError
+  end
+end
+
+class RoadBike < Bicycle
+  attr_reader :tape_color
+
+  def post_initialize(args)
+    @tape_color = args[:tape_color]
+  end
+
+  def spares
+    super.merge({tape_color: tape_color})
+  end
+
+  def default_tire_size
+    '23'
+  end
+end
+
+road_bike = RoadBike.new(
+              size:       'M',
+              tire_size:  25,
+              tape_color: 'red' )
+
+puts road_bike.spares
+
+
+# This change doesn’t just remove the send of super from RoadBike’s 
+# initialize method, it removes the initialize method altogether. 
+# RoadBike no longer controls initialization; it instead contributes 
+# specializations to a larger, abstract algorithm. That algorithm is 
+# defined in the abstract superclass Bicycle, which in turn is 
+# responsible for sending post_initialize.
+
+# RoadBike is still responsible for what initialization it needs but 
+# is no longer responsible for when its initialization occurs. This 
+# change allows RoadBike to know less about Bicycle, reducing the 
+# coupling between them and making each more flexible in the face of 
+# an uncertain future. RoadBike doesn’t know when its 
+# post_initialize method will be called and it doesn’t care what 
+# object actually sends the message. Bicycle (or any other object) 
+# could send this message at any time, there is no requirement that 
+# it be sent during object initialization.
+
+# **
+# Putting control of the timing in the superclass means the 
+# algorithm can change without forcing changes upon the subclasses.
+
+############## Page 135 ##############
+class Bicycle
+  # ...
+  def spares
+    { tire_size: tire_size,
+      chain:     chain}.merge(local_spares)
+  end
+
+  # hook for subclasses to override
+  def local_spares
+    {}
+  end
+
+end
+
+class RoadBike < Bicycle
+  # ...
+  def local_spares
+    {tape_color: tape_color}
+  end
+
+end
+
+############## Page ??? ##############
+# Full listing for above
+class Bicycle
+  attr_reader :size, :chain, :tire_size
+
+  def initialize(args={})
+    @size       = args[:size]
+    @chain      = args[:chain]      || default_chain
+    @tire_size  = args[:tire_size]  || default_tire_size
+    post_initialize(args)
+  end
+
+  def post_initialize(args)
+    nil
+  end
+
+  def spares
+    { tire_size: tire_size,
+      chain:     chain}.merge(local_spares)
+  end
+
+  def local_spares
+    {}
+  end
+
+  def default_chain
+    '10-speed'
+  end
+
+  def default_tire_size
+    raise NotImplementedError
+  end
+end
+
+class RoadBike < Bicycle
+  attr_reader :tape_color
+
+  def post_initialize(args)
+    @tape_color = args[:tape_color]
+  end
+
+  def local_spares
+    {tape_color: tape_color}
+  end
+
+  def default_tire_size
+    '23'
+  end
+end
+
+road_bike = RoadBike.new(
+              size:       'M',
+              tire_size:  25,
+              tape_color: 'red' )
+puts road_bike.spares
+# -> {:tire_size   => 25,
+#     :chain       => "10-speed",
+#     :tape_color  => "red"}
+
+# RoadBike’s new implementation of local_spares replaces its former 
+# implementation of spares. This change preserves the specialization 
+# supplied by RoadBike but reduces its coupling to Bicycle. RoadBike 
+# no longer has to know that Bicycle implements a spares method; it 
+# merely expects that its own implementation of local_spares will be 
+# called, by some object, at some time.
+
+
+############## Page 136 ##############
+class Bicycle
+  attr_reader :size, :chain, :tire_size
+
+  def initialize(args={})
+    @size       = args[:size]
+    @chain      = args[:chain]      || default_chain
+    @tire_size  = args[:tire_size]  || default_tire_size
+    post_initialize(args)
+  end
+
+  def spares
+    {
+      tire_size:  tire_size,
+      chain:      chain
+    }.merge(local_spares)
+  end
+
+  def default_tire_size
+    raise NotImplementedError
+  end
+
+  # subclasses may override
+  def post_initialize(args)
+    nil
+  end
+
+  def local_spares
+    {}
+  end
+
+  def default_chain
+    '10-speed'
+  end
+
+end
+
+class RoadBike < Bicycle
+  attr_reader :tape_color
+
+  def post_initialize(args)
+    @tape_color = args[:tape_color]
+  end
+
+  def local_spares
+    {tape_color: tape_color}
+  end
+
+  def default_tire_size
+    '23'
+  end
+end
+
+class MountainBike < Bicycle
+  attr_reader :front_shock, :rear_shock
+
+  def post_initialize(args)
+    @front_shock  = args[:front_shock]
+    @rear_shock   = args[:rear_shock]
+  end
+
+  def local_spares
+    {rear_shock:  rear_shock}
+  end
+
+  def default_tire_size
+    '2.1'
+  end
+end
+
+# **
+# RoadBike and MountainBike are more readable now that they contain 
+# only specializations. It’s clear at a glance what they do, and 
+# it’s clear that they are specializations of Bicycle.
+# New subclasses need only implement the template methods. 
+
+############## Page 138 ##############
+class RecumbentBike < Bicycle
+  attr_reader :flag
+
+  def post_initialize(args)
+    @flag = args[:flag]
+  end
+
+  def local_spares
+    {flag: flag}
+  end
+
+  def default_chain
+    '9-speed'
+  end
+
+  def default_tire_size
+    '28'
+  end
+end
+
+# The code in RecumbentBike is transparently obvious and is so 
+# regular and predictable that it might have come off of an assembly 
+# line. It illustrates the strength and value of inheritance; when 
+# the hierarchy is correct, anyone can successfully create a new 
+# subclass.
+
+bent = RecumbentBike.new(flag: 'tall and orange')
+puts bent.spares
+# -> {:tire_size => "28",
+#     :chain     => "9-speed",
+#     :flag      => "tall and orange"}
