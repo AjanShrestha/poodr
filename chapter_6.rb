@@ -761,13 +761,13 @@ class RecumbentBike < Bicycle
   end
 end
 
-bent = RecumbentBike.new
+# bent = RecumbentBike.new
 # NameError: undefined local variable or method
 #   `default_tire_size'
 
 ############## Page ??? ##############
   # This line of code is a time bomb
-  @tire_size  = args[:tire_size]  || default_tire_size
+  # @tire_size  = args[:tire_size]  || default_tire_size
 
 # The original designer of the hierarchy rarely encounters this 
 # problem. She wrote Bicycle; she understands the requirements that 
@@ -801,7 +801,7 @@ end
 # upon to read it and useful error messages for those who cannot.
 
 ############## Page 128 ##############
-bent = RecumbentBike.new
+# bent = RecumbentBike.new
 #  NotImplementedError: NotImplementedError
 
 ############## Page 128 ##############
@@ -814,7 +814,7 @@ class Bicycle
 end
 
 ############## Page 129 ##############
-bent = RecumbentBike.new
+# bent = RecumbentBike.new
 #  NotImplementedError:
 #    This RecumbentBike cannot respond to:
 #	     `default_tire_size'
@@ -962,7 +962,7 @@ road_bike = RoadBike.new(
   size:       'M',
   tape_color: 'red' )
 
-put road_bike.spares
+puts road_bike.spares
 # -> {:tire_size   => "23",
 #     :chain       => "10-speed",
 #     :tape_color  => "red"}
