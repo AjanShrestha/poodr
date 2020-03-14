@@ -1375,3 +1375,34 @@ puts bent.spares
 # -> {:tire_size => "28",
 #     :chain     => "9-speed",
 #     :flag      => "tall and orange"}
+
+## Summary ##
+
+# Inheritance solves the problem of related types that share a great 
+# deal of common behavior but differ across some dimension. It 
+# allows you to isolate shared code and implement common algorithms 
+# in an abstract class, while also providing a structure that 
+# permits subclasses to contribute specializations.
+
+# The best way to create an abstract superclass is by pushing code 
+# up from concrete subclasses. Identifying the correct abstraction 
+# is easiest if you have access to at least three existing concrete 
+# classes. This chapter’s simple example relied on just two but in 
+# the real world you are often better served to wait for the 
+# additional information that three cases supply.
+
+# Abstract superclasses use the template method pattern to invite 
+# inheritors to supply specializations, and use hook methods to 
+# allow these inheritors to contribute these specializations without 
+# being forced to send super. Hook methods allow subclasses to 
+# contribute specializations without knowing the abstract algorithm. 
+# They remove the need for subclasses to send super and therefore 
+# reduce the coupling between layers of the hierarchy and increase 
+# its tolerance for change.
+
+# Well-designed inheritance hierarchies are easy to extend with new 
+# subclasses, even for programmers who know very little about the 
+# application. This ease of extension is inheritance’s greatest 
+# strength. When your problem is one of needing numerous 
+# specializations of a stable, common abstraction, inheritance can 
+# be an extremely low-cost solution.
