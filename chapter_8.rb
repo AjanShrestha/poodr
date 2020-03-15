@@ -218,3 +218,139 @@ puts mountain_bike.spares
 
 # Thus, there’s a Parts object, and it may contain many Part 
 # objects—simple as that.
+
+### Creating a Part ###
+
+# Figure 8.4 shows a new sequence diagram that illustrates the 
+# conversation between Bicycle and its Parts object, and between a 
+# Parts object and its Part objects. Bicycle sends spares to Parts 
+# and then the Parts object sends needs_spare to each Part.
+
+# Changing the design in this way requires creating a new Part 
+# object. The Parts object is now composed of Part objects, as 
+# illustrated by the class diagram in Figure 8.5. The “1..*” on the 
+# line near Part indicates that a Parts will have one or more Part 
+# objects.
+
+# Introducing this new Part class simplifies the existing Parts 
+# class, which now becomes a simple wrapper around an array of Part 
+# objects. Parts can filter its list of Part objects and return the 
+# ones that need spares. The code below shows three classes: the 
+# existing Bicycle class, the updated Parts class, and the newly 
+# introduced Part class.
+
+############## Page 169 ##############
+class Bicycle
+  attr_reader :size, :parts
+
+  def initialize(args={})
+    @size       = args[:size]
+    @parts      = args[:parts]
+  end
+
+  def spares
+    parts.spares
+  end
+end
+
+class Parts
+  attr_reader :parts
+
+  def initialize(parts)
+    @parts = parts
+  end
+
+  def spares
+    parts.select {|part| part.needs_spare}
+  end
+end
+
+class Part
+  attr_reader :name, :description, :needs_spare
+
+  def initialize(args)
+    @name         = args[:name]
+    @description  = args[:description]
+    @needs_spare  = args.fetch(:needs_spare, true)
+  end
+end
+
+# Now that these three classes exist you can create individual Part 
+# objects. The following code creates a number of different parts and 
+# saves each in an instance variable.
+
+############## Page 170 ##############
+chain = Part.new(name: 'chain', description: '10-speed')
+
+road_tire = Part.new(name: 'tire_size', description: '23')
+
+tape = Part.new(name: 'tape_color', description: 'red')
+
+mountain_tire = Part.new(name: 'tire_size', description: '2.1')
+
+rear_shock = Part.new(name: 'rear_shock', description: 'Fox')
+
+front_shock = Part.new(
+  name: 'front_shock', 
+  description: 'Manitou', 
+  needs_spare: false
+)
+
+# Individual Part objects can be grouped together into a Parts. The 
+# code below combines the road bike Part objects into a road bike 
+# suitable Parts.
+
+############## Page 171 ##############
+road_bike_parts = Parts.new([chain, road_tire, tape])
+
+# Of course, you can skip this intermediate step and simply construct 
+# the Parts object on the fly when creating a Bicycle,
+
+############## Page 171 ##############
+road_bike =
+  Bicycle.new(
+    size:  'L',
+    parts: Parts.new([chain,
+                      road_tire,
+                      tape]))
+
+puts road_bike.size    # -> 'L'
+
+puts road_bike.spares
+# -> [#<Part:0x00000101036770
+#         @name="chain",
+#         @description="10-speed",
+#         @needs_spare=true>,
+#     #<Part:0x0000010102dc60
+#         @name="tire_size",
+#         etc ...
+
+mountain_bike =
+  Bicycle.new(
+    size:  'L',
+    parts: Parts.new([chain,
+                      mountain_tire,
+                      front_shock,
+                      rear_shock]))
+
+puts mountain_bike.size    # -> 'L'
+
+puts mountain_bike.spares
+# -> [#<Part:0x00000101036770
+#         @name="chain",
+#         @description="10-speed",
+#         @needs_spare=true>,
+#     #<Part:0x0000010101b678
+#         @name="tire_size",
+#         etc ...
+
+# **
+# This new code arrangement works just fine, and it behaves almost 
+# exactly like the old Bicycle hierarchy. There is one difference: 
+# Bicycle’s old spares method returned a hash, but this new spares 
+# method returns an array of Part objects.
+# While it may be tempting to think of these objects as instances of 
+# Part, composition tells you to think of them as objects that play 
+# the Part role. They don’t have to be a kind-of the Part class, they 
+# just have to act like one; that is, they must respond to name, 
+# description, and needs_spare.
