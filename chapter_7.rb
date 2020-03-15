@@ -484,3 +484,21 @@ puts m.schedulable?(starting, ending)
 # placing method definitions in specific and unambiguous places along 
 # the method lookup path. Figure 7.7 illustrates the complete list of 
 # possibilities.
+
+### Inheriting Role Behavior ###
+# Now that you’ve seen how to define a role’s shared code in a module 
+# and how a module’s code gets inserted into the method lookup path, 
+# you are equipped to write some truly frightening code. You can 
+# create deeply nested class inheritance hierarchies and then include 
+# these various modules at different levels of the hierarchy.
+
+# You can write code that is impossible to understand, debug, or 
+# extend.
+
+# **
+# This is powerful stuff, and dangerous in untutored hands. However, 
+# because this very same power is what allows you to create simple 
+# structures of related objects that elegantly fulfill the needs of 
+# your application, your task is not to avoid these techniques but to 
+# learn to use them for the right reasons, in the right places, in 
+# the correct way.
