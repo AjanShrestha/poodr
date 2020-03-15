@@ -642,3 +642,38 @@ puts m.schedulable?(starting, ending)
 # MonsterMountainBike under MountainBike. In order to combine its own 
 # spare parts with those of its parent, MonsterMountainBike would be 
 # forced to override local_spares, and within it, send super.
+
+# ***
+### Create Shallow Hierarches ###
+
+# The limitations of hook methods are just one of the many reasons to 
+# create shallow hierarchies.
+
+# Every hierarchy can be thought of a pyramid that has both depth and 
+# breadth. An object’s depth is the number of superclasses between it 
+# and the top. Its breadth is the number of its direct subclasses. A 
+# hierarchy’s shape is defined by its overall breadth and depth and 
+# it is this shape that determines ease of use, maintenance, and 
+# extension. Figure 7.8 illustrates a few of the possible variations 
+# of shape.
+
+# Shallow, narrow hierarchies are easy to understand. Shallow, wide 
+# hierarchies are slightly more complicated. Deep, narrow hierarchies 
+# are a bit more challenging and unfortunately have a natural 
+# tendency to get wider, strictly as a side effect of their depth. 
+# Deep, wide hierarchies are difficult to understand, costly to 
+# maintain, and should be avoided.
+
+# The problem with deep hierarchies is that they define a very long 
+# search path for message resolution and provide numerous 
+# opportunities for objects in that path to add behavior as the 
+# message passes by. Because objects depend on everything above them, 
+# a deep hierarchy has a large set of built-in dependencies, each of 
+# which might someday change.
+
+# Another problem with deep hierarchies is that programmers tend to 
+# be familiar with just the classes at their tops and bottoms; that 
+# is, they tend to understand only the behavior implemented at the 
+# boundaries of the search path. The classes in the middle get short 
+# shrift. Changes to these vaguely understood middle classes stand a 
+# greater chance of introducing errors.
