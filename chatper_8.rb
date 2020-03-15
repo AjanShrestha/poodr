@@ -24,3 +24,52 @@
 
 # This section takes Chapter 6 example and moves it through several 
 # refactorings, gradually replacing inheritance with composition.
+
+### Updating the Bicycle Class ###
+
+# The Bicycle class is currently an abstract superclass in an 
+# inheritance hierarchy and you’d like to convert it to use 
+# composition. The first step is to ignore the existing code and 
+# think about how a bicycle should be composed.
+
+# The Bicycle class is responsible for responding to the spares 
+# message. This spares message should return a list of spare parts. 
+# Bicycles have parts, the bicycle–parts relationship quite naturally 
+# feels like composition. If you created an object to hold all of a 
+# bicycle’s parts, you could delegate the spares message to that new 
+# object.
+
+# It’s reasonable to name this new class Parts. The Parts object can 
+# be responsible for holding a list of the bike’s parts and for 
+# knowing which of those parts needs spares. Notice that this object 
+# represents a collection of parts, not a single part.
+
+# The sequence diagram in Figure 8.1 illustrates this idea. Here, a 
+# Bicycle sends the spares message to its Parts object.
+
+# Every Bicycle needs a Parts object; part of what it means to be a 
+# Bicycle is to have-a Parts. The class diagram in Figure 8.2 
+# illustrates this relationship.
+
+# This diagram shows the Bicycle and Parts classes connected by a 
+# line. The line attaches to Bicycle with a black diamond; this black 
+# diamond indicates composition, it means that a Bicycle is composed 
+# of Parts. The Parts side of the line has the number “1.” This means 
+# there’s just one Parts object per Bicycle.
+
+############## Page 165 ##############
+class Bicycle
+  attr_reader :size, :parts
+
+  def initialize(args={})
+    @size         = args[:size]
+    @parts        = args[:parts]
+  end
+
+  def spares
+    parts.spares
+  end
+end
+
+# Bicycle is now responsible for three things: knowing its size, 
+# holding onto its Parts, and answering its spares.
