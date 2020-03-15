@@ -539,3 +539,28 @@ puts m.schedulable?(starting, ending)
 # In addition to sharing an interface, duck types might also share 
 # behavior. When they do, place the shared code in a module and 
 # include that module in each class or object that plays the role.
+
+### Insist on the Abstraction ###
+
+# **
+# All of the code in an abstract superclass should apply to every 
+# class that inherits it. Superclasses should not contain code that 
+# applies to some, but not all, subclasses. This restriction also 
+# applies to modules: the code in a module must apply to all who use 
+# it.
+
+# Faulty abstractions cause inheriting objects to contain incorrect 
+# behavior; attempts to work around this erroneous behavior will 
+# cause your code to decay. When interacting with these awkward 
+# objects, programmers are forced to know their quirks and into 
+# dependencies that are better avoided.
+# Subclasses that override a method to raise an exception like “does 
+# not implement” are a symptom of this problem. While it is true that 
+# expediency pays for all and that it is sometimes most cost 
+# effective to arrange code in just this way, you should be reluctant 
+# to do so. When subclasses override a method to declare that they do 
+# not do that thing they come perilously close to declaring that they 
+# are not that thing. Nothing good can come of this.
+# If you cannot correctly identify the abstraction there may not be 
+# one, and if no common abstraction exists then inheritance is not 
+# the solution to your design problem.
