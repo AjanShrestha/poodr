@@ -564,3 +564,46 @@ puts m.schedulable?(starting, ending)
 # If you cannot correctly identify the abstraction there may not be 
 # one, and if no common abstraction exists then inheritance is not 
 # the solution to your design problem.
+
+# **
+### Honor the Contract ###
+
+# Subclasses agree to a contract; they promise to be substitutable 
+# for their superclasses. Substitutability is possible only when 
+# objects behave as expected and subclasses are expected to conform 
+# to their superclass’s interface. They must respond to every message 
+# in that interface, taking the same kinds of inputs and returning 
+# the same kinds of outputs. They are not permitted to do anything 
+# that forces others to check their type in order to know how to 
+# treat them or what to expect of them.
+
+# Where superclasses place restrictions on input arguments and return 
+# values, subclasses can indulge in a slight bit of freedom without 
+# violating their contract. Subclasses may accept input parameters 
+# that have broader restrictions and may return results that have 
+# narrower restrictions, all while remaining perfectly substitutable 
+# for their superclasses.
+# Subclasses that fail to honor their contract are difficult to use. 
+# They’re “special” and cannot be freely substituted for their 
+# superclasses. These subclasses are declaring that they are not 
+# really a kind-of their superclass and cast doubt on the correctness 
+# of the entire hierarchy.
+
+# ------------------------------------------------------------------
+# Liskov Substitution Principle (LSP)
+# When you honor the contract, you are following the Liskov 
+# Substitution Principle, which is named for its creator, Barbara 
+# Liskov, and supplies the “L” in the SOLID design principles.
+
+# Her principle states:
+# Let q(x) be a property provable about objects x of type T. Then q(y)
+# should be true for objects y of type S where S is a subtype of T.
+
+# Mathematicians will instantly comprehend this statement; everyone 
+# else should understand it to say that in order for a type system to 
+# be same, subtypes must be substitutable for their supertypes.
+# Following this principle creates applications where a subclass can 
+# be used anywhere its superclass would do, and where objects that 
+# include modules can be trusted to interchangeably play the module’s 
+# role.
+# ------------------------------------------------------------------
