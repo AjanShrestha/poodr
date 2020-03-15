@@ -621,3 +621,24 @@ puts m.schedulable?(starting, ending)
 # The template methods represent the parts of the algorithm that vary 
 # and creating them forces you to make explicit decisions about what 
 # varies and what does not.
+
+# **
+### Preemptively Decouple Classes ###
+
+# Avoid writing code that requires its inheritors to send super; 
+# instead use hook messages to allow subclasses to participate while 
+# absolving them of responsibility for knowing the abstract 
+# algorithm. Inheritance, by its very nature, adds powerful 
+# dependencies on the structure and arrangement of code. Writing code 
+# that requires subclasses to send super adds an additional 
+# dependency; avoid this if you can.
+
+# Hook methods solve the problem of sending super, but, 
+# unfortunately, only for adjacent levels of the hierarchy. For 
+# example, in Chapter 6, Bicycle sent hook method local_spares that 
+# MountainBike overrode to provide specializations. This hook method 
+# serves its purpose admirably, but the original problem reoccurs if 
+# you add another level to the hierarchy by creating subclass 
+# MonsterMountainBike under MountainBike. In order to combine its own 
+# spare parts with those of its parent, MonsterMountainBike would be 
+# forced to override local_spares, and within it, send super.
