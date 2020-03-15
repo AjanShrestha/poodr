@@ -426,3 +426,61 @@ puts m.schedulable?(starting, ending)
 # has distinct consequences. However, the coding techniques for these 
 # two things are very similar and this similarity exists because both 
 # techniques rely on automatic message delegation.
+
+### Looking Up Methods ###
+
+# Understanding the similarities between classical inheritance and 
+# module inclusion is easier if you understand how object-oriented 
+# languages, in general, and Ruby, in particular, find the method 
+# implementation that matches a message send.
+
+#### A Gross Oversimplification ####
+# The search for a method begins in the class of the receiving 
+# object. If this class does not implement the message, the search 
+# proceeds to its superclass. From here on only superclasses matter, 
+# the search proceeds up the superclass chain, looking in one 
+# superclass after another, until it reaches the top of the hierarchy.
+# Figure7.5
+
+#### A More Accurate Explanation ####
+# Figure 7.6
+# The object hierarchy in Figure 7.6 looks much like the one from 
+# Figure 7.5. It differs only in that Figure 7.6 shows the 
+# Schedulable module highlighted between the Bicycle and Object 
+# classes.
+# Figure 7.6 shows the schedulable? message being sent to an instance 
+# of MountainBike. To resolve this message, Ruby first looks for a 
+# matching method in the MountainBike class. The search then proceeds 
+# along the method lookup path, which now contains modules as well as 
+# superclasses. An implementation of schedulable? is eventually found 
+# in Schedulable, which lies in the lookup path between Bicycle and 
+# Object.
+
+#### A Very Nearly Complete Explanation ####
+# It’s entirely possible for a hierarchy to contain a long chain of 
+# superclasses, each of which includes many modules. When a single 
+# class includes several different modules, the modules are placed in 
+# the method lookup path in reverse order of module inclusion. 
+# Thus, the methods of the last included module are encountered first 
+# in the lookup path.
+# This discussion has, until now, been about including modules into 
+# classes via Ruby’s include keyword. As you have already seen, 
+# including a module into a class adds the module’s methods to the 
+# response set for all instances of that class. For example, in 
+# Figure 7.6 the Schedulable module was included into the Bicycle 
+# class, and, as a result, instances of MountainBike gain access to 
+# the methods defined therein.
+# However, it is also possible to add a module’s methods to a single 
+# object, using Ruby’s extend keyword. Because extend adds the 
+# module’s behavior directly to an object, extending a class with a 
+# module creates class methods in that class and extending an 
+# instance of a class with a module creates instance methods in that 
+# instance. These two things are exactly the same; classes are, after 
+# all, just plain old objects, and extend behaves the same for all.
+# Finally, any object can also have ad hoc methods added directly to 
+# its own personal “Singleton class.” These ad hoc methods are unique 
+# to this specific object.
+# Each of these alternatives adds to an object’s response set by 
+# placing method definitions in specific and unambiguous places along 
+# the method lookup path. Figure 7.7 illustrates the complete list of 
+# possibilities.
