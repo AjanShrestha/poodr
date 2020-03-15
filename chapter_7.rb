@@ -201,3 +201,72 @@
 # Just as strings respond to empty? and can speak for themselves, 
 # targets should respond to schedulable?. The schedulable? method 
 # should be added to the interface of the Schedulable role.
+
+### Writing the Concrete Code ###
+
+# The simplest way to get started is to separate the two decisions. 
+# Pick an arbi- trary concrete class (for example, Bicycle) and 
+# implement the schedulable? method directly in that class. Once you 
+# have a version that works for Bicycle you can refactor your way to 
+# a code arrangement that allows all Schedulables to share the 
+# behavior.
+# Figure 7.3 shows a sequence diagram where this new code is in 
+# Bicycle. Bicycle now responds to messages about its own 
+# “schedulability.”
+# Before this change, every instigating object had to know about and 
+# thus had a dependency on the Schedule. This change allows bicycles 
+# to speak for themselves, freeing instigating objects to interact 
+# with them without the aid of a third party.
+
+############## Page 148 ##############
+class Schedule
+  def scheduled?(schedulable, start_date, end_date)
+    puts  "This #{schedulable.class} " +
+          "is not scheduled\n" +
+          " between #{start_date} and #{end_date}"
+  end
+end
+
+############## Page 149 ##############
+class Bicycle
+  attr_reader :schedule, :size, :chain, :tire_size
+
+  # Inject the schedule and provide a default
+  def initialize(args={})
+    @schedule = args[:schedule] || Schedule.new
+    # ...
+  end
+
+  # Return true if this bicycle is available
+  # during this (now Bicycle specific) interval.
+  def schedulable?(start_date, end_date)
+    !scheduled?(start_date - lead_days, end_date)
+  end
+
+  # Return the schedule's answer
+  def scheduled?(start_date, end_date)
+    schedule.scheduled?(self, start_date, end_date)
+  end
+
+  # Return the number of lead_data before a bicycle
+  # can be scheduled
+  def lead_days
+    1
+  end
+
+  # ...
+end
+
+require 'date'
+starting = Date.parse("2020/03/07")
+ending   = Date.parse("2020/03/14")
+
+b = Bicycle.new
+puts b.schedulable?(starting, ending)
+# This Bicycle is not scheduled
+#   betwee 2020-03-07 and 2020-03-14
+#   => true
+
+# This code hides knowledge of who the Schedule is and what the 
+# Schedule does inside of Bicycle. Objects holding onto a Bicycle no 
+# longer need know about the existence or behavior of the Schedule.
