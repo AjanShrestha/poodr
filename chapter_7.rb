@@ -677,3 +677,28 @@ puts m.schedulable?(starting, ending)
 # boundaries of the search path. The classes in the middle get short 
 # shrift. Changes to these vaguely understood middle classes stand a 
 # greater chance of introducing errors.
+
+## Summary ##
+
+# When objects that play a common role need to share behavior, they 
+# do so via a Ruby module. The code defined in a module can be added 
+# to any object, be it an instance of a class, a class itself, or 
+# another module.
+
+# When a class includes a module, the methods in that module get put 
+# into the same lookup path as methods acquired via inheritance. 
+# Because module methods and inherited methods interleave in the 
+# lookup path, the coding techniques for modules mirror those of 
+# inheritance. Modules, therefore, should use the template method 
+# pattern to invite those that include them to supply 
+# specializations, and should implement hook methods to avoid forcing 
+# includers to send super (and thus know the algorithm).
+
+# When an object acquires behavior that was defined elsewhere, 
+# regardless of whether this elsewhere is a superclass or an included 
+# module, the acquiring object makes a commitment to honoring an 
+# implied contract. This contract is defined by the Liskov 
+# Substitution Principle, which in mathematical terms says that a 
+# subtype should be substitutable for its supertype, and in Ruby 
+# terms this means that an object should act like what it claims to 
+# be.
