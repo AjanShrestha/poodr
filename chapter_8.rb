@@ -195,3 +195,26 @@ puts mountain_bike.spares
 # blindingly obvious just how little Bicycle specific code there was 
 # to begin with. Most of the code above deals with individual parts; 
 # the Parts hierarchy now cries out for another refactoring.
+
+## Composing the Parts Object ##
+
+# By definition a parts list contains a list of individual parts. 
+# It’s time to add a class to represent a single part. The class name 
+# for an individual part clearly ought to be Part but introducing a 
+# Part class when you already have a Parts class makes conversation a 
+# challenge. It is confusing to use the word “parts” to refer to a 
+# collection of Part objects, when that same word already refers to a 
+# single Parts object. However, the previous phrase illustrates a 
+# technique that side steps the communication problem; when 
+# discussing Part and Parts, you can follow the class name with the 
+# word “object” and pluralize “object” as necessary.
+
+# You can also avoid the communication problem from the beginning by 
+# choosing different class names, but other names might not be as 
+# expressive and may well introduce communication problems of their 
+# own. This Parts/Part situation is common enough that it’s worth 
+# dealing with head-on. Choosing these class names requires a 
+# precision of communication that’s a worthy goal in itself.
+
+# Thus, there’s a Parts object, and it may contain many Part 
+# objects—simple as that.
