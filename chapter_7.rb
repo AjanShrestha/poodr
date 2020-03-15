@@ -264,9 +264,165 @@ ending   = Date.parse("2020/03/14")
 b = Bicycle.new
 puts b.schedulable?(starting, ending)
 # This Bicycle is not scheduled
-#   betwee 2020-03-07 and 2020-03-14
+#   betwee 2020-03-06 and 2020-03-14
 #   => true
 
 # This code hides knowledge of who the Schedule is and what the 
 # Schedule does inside of Bicycle. Objects holding onto a Bicycle no 
 # longer need know about the existence or behavior of the Schedule.
+
+
+## Extracing the Abstraction ###
+
+# The code above solves the first part of current problem in that it 
+# decides what the schedulable? method should do, but Bicycle is not 
+# the only kind of thing that is “schedulable.” Mechanic and Vehicle 
+# also play this role and therefore need this behavior. It’s time to 
+# rearrange the code so that it can be shared among objects of 
+# different classes.
+
+############## Page 150 ##############
+module Schedulable
+  attr_writer :schedule
+
+  def schedule
+    @schedule ||= ::Schedule.new
+  end
+
+  def schedulable?(start_date, end_date)
+    !scheduled?(start_date - lead_days, end_date)
+  end
+
+  def scheduled?(start_date, end_date)
+    schedule.scheduled?(self, start_date, end_date)
+  end
+
+  # includers may override
+  def lead_days
+    0
+  end
+
+end
+
+# **
+# Two things have changed from the code as it previously existed in 
+# Bicycle. First, a schedule method (line 4) has been added. This 
+# method returns an instance of the overall Schedule.
+# Back in Figure 7.2 the instigating object depended on the Schedule, 
+# which meant there might be many places in the application that 
+# needed knowledge of the Schedule. In the next iteration, Figure 7.
+# 3, this dependency was transferred to Bicycle, reducing its reach 
+# into the application. Now, in the code above, the dependency on 
+# Schedule has been removed from Bicycle and moved into the 
+# Schedulable module, isolating it even further.
+
+# **
+# The second change is to the lead_days method (line 17). Bicycle’s 
+# former implementation returned a bicycle specific number, the 
+# module’s implementation now returns a more generic default of zero 
+# days.
+# Even if there were no reasonable application default for lead days, 
+# the Schedulable module must still implement the lead_days method. 
+# The rules for modules are the same as for classical inheritance. If 
+# a module sends a message it must provide an implementation, even if 
+# that implementation merely raises an error indicating that users of 
+# the module must implement the method.
+
+# Including this new module in the original Bicycle class, as shown 
+# in the example below, adds the module’s methods to Bicycle’s 
+# response set. The lead_days method is a hook that follows the 
+# template method pattern. Bicycle overrides this hook (line 4) to 
+# provide a specialization.
+
+############## Page 151 ##############
+class Bicycle
+  include Schedulable
+
+  def lead_days
+    1
+  end
+
+  # ...
+end
+
+require 'date'
+starting = Date.parse("2020/03/07")
+ending   = Date.parse("2020/03/14")
+
+b = Bicycle.new
+puts b.schedulable?(starting, ending)
+# This Bicycle is not scheduled
+#    between 2020-03-06 and 2020-03-14
+#  => true
+
+# Moving the methods to the Schedulable module, including the module 
+# and overriding lead_days, allows Bicycle to continue to behave 
+# correctly. Additionally, now that you have created this module 
+# other objects can make use of it to become Schedulable themselves. 
+# They can play this role without duplicating the code.
+
+# **
+# The pattern of messages has changed from that of sending 
+# schedulable? to a Bicycle to sending schedulable? to a Schedulable. 
+# You are now committed to the duck type and the sequence diagram 
+# shown in Figure 7.3 can be altered to look like the one in Figure 7.
+# 4.
+
+# Once you include this module in all of the classes that can be 
+# scheduled, the pattern of code becomes strongly reminiscent of 
+# inheritance. The following example shows Vehicle and Mechanic 
+# including the Schedulable module and responding to the schedulable? 
+# message.
+
+############## Page 152 ##############
+class Vehicle
+  include Schedulable
+
+  def lead_days
+    3
+  end
+
+  # ...
+
+end
+
+class Mechanic
+  include Schedulable
+
+  def lead_days
+    4
+  end
+
+  # ...
+end
+
+v = Vehicle.new
+puts v.schedulable?(starting, ending)
+# This Vehicle is not scheduled
+#   between 2020-03-04 and 2020-03-14
+#  => true
+
+m = Mechanic.new
+puts m.schedulable?(starting, ending)
+# This Mechanic is not scheduled
+#   between 2020-03-03 and 2020-03-14
+#  => true
+
+# **
+# The code in Schedulable is the abstraction and it uses the template 
+# method pattern to invite objects to provide specializations to the 
+# algorithm it supplies. Schedulables override lead_days to supply 
+# those specializations. When schedulable? arrives at any 
+# Schedulable, the message is automatically delegated to the method 
+# defined in the module.
+
+# This may not fit the strict definition of classical inheritance, 
+# but in terms of how the code should be written and how the messages 
+# are resolved, it certainly acts like it. The coding techniques are 
+# the same because method lookup follows the same path.
+# This chapter has been careful to maintain a distinction between 
+# classical inheritance and sharing code via modules. This is-a 
+# versus behaves-like-a difference definitely matters, each choice 
+# has distinct consequences. However, the coding techniques for these 
+# two things are very similar and this similarity exists because both 
+# techniques rely on automatic message delegation.
