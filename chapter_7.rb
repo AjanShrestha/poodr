@@ -509,3 +509,33 @@ puts m.schedulable?(starting, ending)
 # modules is in direct proportion to the quality of the code. More so 
 # than with other design strategies, sharing inherited behavior 
 # requires very specific coding techniques
+
+# **
+### Recognize the Antipatterns ###
+
+# There are two antipatterns that indicate that your code might benefit from inheritance. 
+
+# First, an object that uses a variable with a name like type or 
+# category to determine what message to send to self contains two 
+# highly related but slightly different types. This is a maintenance 
+# nightmare; the code must change every time a new type is added. 
+# Code like this can be rearranged to use classical inheritance by 
+# putting the common code in an abstract superclass and creating 
+# subclasses for the different types. This rearrangement allows you 
+# to create new subtypes by adding new subclasses.
+# These subclasses extend the hierarchy without changing the existing 
+# code.
+
+# Second, when a sending object checks the class of a receiving 
+# object to determine what message to send, you have overlooked a 
+# duck type. This is another maintenance nightmare; the code must 
+# change every time you introduce a new class of receiver. In this 
+# situation all of the possible receiving objects play a common role. 
+# This role should be codified as a duck type and receivers should 
+# implement the duck type’s interface. Once they do, the original 
+# object can send one single message to every receiver, confident 
+# that because each receiver plays the role it will understand the 
+# common message.
+# In addition to sharing an interface, duck types might also share 
+# behavior. When they do, place the shared code in a module and 
+# include that module in each class or object that plays the role.
