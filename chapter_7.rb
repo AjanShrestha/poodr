@@ -607,3 +607,17 @@ puts m.schedulable?(starting, ending)
 # include modules can be trusted to interchangeably play the module’s 
 # role.
 # ------------------------------------------------------------------
+
+# **
+### Use the Template Method Pattern ###
+
+# The fundamental coding technique for creating inheritable code is 
+# the template method pattern. This pattern is what allows you to 
+# separate the abstract from the concrete. The abstract code 
+# defines the algorithms and the concrete inheritors of that 
+# abstraction contribute specializations by overriding these template 
+# methods.
+
+# The template methods represent the parts of the algorithm that vary 
+# and creating them forces you to make explicit decisions about what 
+# varies and what does not.
