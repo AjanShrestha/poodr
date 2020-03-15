@@ -502,3 +502,10 @@ puts m.schedulable?(starting, ending)
 # your application, your task is not to avoid these techniques but to 
 # learn to use them for the right reasons, in the right places, in 
 # the correct way.
+
+## Writing Inheritable Code ##
+
+# The usefulness and maintainability of inheritance hierarchies and 
+# modules is in direct proportion to the quality of the code. More so 
+# than with other design strategies, sharing inherited behavior 
+# requires very specific coding techniques
