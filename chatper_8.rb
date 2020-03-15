@@ -19,3 +19,8 @@
 # idea that, not only does a bicycle have parts, but it communicates 
 # with them via an interface. Part is a role and bicycles are happy 
 # to collaborate with any object that plays the role.
+
+## Composing a Bicycle of Parts ##
+
+# This section takes Chapter 6 example and moves it through several 
+# refactorings, gradually replacing inheritance with composition.
