@@ -159,3 +159,110 @@
 # Your goal is to gain all of the benefits of testing for the least 
 # cost possible. The best way to achieve this goal is to write 
 # loosely coupled tests about only the things that matter.
+
+# **
+### Knowing What to Test ###
+# Most programmers write too many tests. This is not always obvious 
+# because in many cases the cost of these unnecessary tests is so 
+# high that the programmers involved have given up testing 
+# altogether. It’s not that they don’t have tests. They have a big, 
+# but out-of-date test suite; it just never runs. One simple way to 
+# get better value from tests is to write fewer of them. The safest 
+# way to accomplish this is to test everything just once and in the 
+# proper place.
+
+# Removing duplication from testing lowers the cost of changing tests 
+# in reaction to application changes, and putting tests in the right 
+# place guarantees they’ll be forced to change only when absolutely 
+# necessary. Distilling your tests to their essence requires having a 
+# very clear idea about what you intend to test, one that can be 
+# derived from design principles you already know.
+
+# **
+# Think of an object-oriented application as a series of messages 
+# passing between a set of black boxes. Dealing with every object as 
+# a black box puts constraints on what others are permitted to know 
+# and limits the public knowledge about any object to the messages 
+# that pierce its boundaries.
+# Well-designed objects have boundaries that are very strong. Each is 
+# like the space capsule shown in Figure 9.1. Nothing on the outside 
+# can see in, nothing on the inside can see out and only a few 
+# explicitly agreed upon messages can pass through the predefined 
+# airlocks.
+# This willful ignorance of the internals of every other object is at 
+# the core of design. Dealing with objects as if they are only and 
+# exactly the messages to which they respond lets you design a 
+# changeable application, and it is your understanding of the 
+# importance of this perspective that allows you to create tests that 
+# provide maximum benefit at minimum cost.
+# The design principles you are enforcing in your application apply 
+# to your tests as well. Each test is merely another application 
+# object that needs to use an existing class. The more the test gets 
+# coupled to that class, the more entangled the two become and the 
+# more vulnerable the test is to unnecessarily being forced to change.
+# Not only should you limit couplings, but the few you allow should 
+# be to stable things. The most stable thing about any object is its 
+# public interface; it logically follows that the tests you write 
+# should be for messages that are defined in public interfaces. The 
+# most costly and least useful tests are those that blast holes in an 
+# object’s containment walls by coupling to unstable internal 
+# details. These over-eager tests prove nothing about the overall 
+# correctness of an application but nonetheless raise costs because 
+# they break with every refactoring of underlying class.
+
+# Tests should concentrate on the incoming or outgoing messages that 
+# cross an object’s boundaries. The incoming messages make up the 
+# public interface of the receiving object. The outgoing messages, by 
+# definition, are incoming into other objects and so are part of some 
+# other object’s interface, as illustrated in Figure 9.2.
+# In Figure 9.2, messages that are incoming into Foo make up Foo’s 
+# public interface. Foo is responsible for testing its own interface 
+# and it does so by making assertions about the results that these 
+# messages return. Tests that make assertions about the values that 
+# messages return are tests of state. Such tests commonly assert that 
+# the results returned by a message equal an expected value.
+# Figure 9.2 also shows Foo sending messages to Bar. A message sent 
+# by Foo to Bar is outgoing from Foo but incoming to Bar. This 
+# message is part of Bar’s public interface and all tests of state 
+# should thus be confined to Bar. Foo need not, and should not, test 
+# these outgoing messages for state. The general rule is that objects 
+# should make assertions about state only for messages in their own 
+# public interfaces. Following this rule confines tests of message 
+# return values to a single place and removes unnecessary 
+# duplication, DRYing out your tests and lowering maintenance costs.
+
+# The fact that you need not test outgoing messages for state does 
+# not mean outgoing messages need no tests at all. There are two 
+# flavors of outgoing messages, and one of them requires a different 
+# kind of test.
+# Some outgoing messages have no side effects and thus matter only to 
+# their senders. The sender surely cares about the result it gets 
+# back (why else send the message?), but no other part of the 
+# application cares if the message gets sent. Outgoing messages like 
+# this are known as queries and they need not be tested by the 
+# sending object. Query messages are part of the public interface of 
+# their receiver, which already implements every necessary test of 
+# state.
+# However, many outgoing messages do have side effects (a file gets 
+# written, a data- base record is saved, an action is taken by an 
+# observer) upon which your application depends. These messages are 
+# commands and it is the responsibility of the sending object to 
+# prove that they are properly sent. Proving that a message gets sent 
+# is a test of behavior, not state, and involves assertions about the 
+# number of times, and with what arguments, the message is sent.
+
+# **
+# Here, then, are the guidelines for what to test: 
+#   Incoming messages should be tested for the state they return. 
+#   Outgoing command messages should be tested to ensure they get 
+#     sent. 
+#   Outgoing query messages should not be tested.
+
+# As long as your application’s objects deal with one another 
+# strictly via public interfaces, your tests need know nothing more. 
+# When you test this minimal set of messages, no change in the 
+# private behavior of any object can affect any test. When you test 
+# outgoing command messages only to prove they get sent, your loosely 
+# coupled tests can tolerate application changes without being forced 
+# to change in turn. As long as the public interfaces remain stable, 
+# you can write tests once and they will keep you safe forever.
