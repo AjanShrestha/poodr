@@ -301,7 +301,7 @@ front_shock = Part.new(
 # suitable Parts.
 
 ############## Page 171 ##############
-road_bike_parts = Parts.new([chain, road_tire, tape])
+# road_bike_parts = Parts.new([chain, road_tire, tape])
 
 # Of course, you can skip this intermediate step and simply construct 
 # the Parts object on the fly when creating a Bicycle,
@@ -577,3 +577,50 @@ puts mountain_bike.parts.size    # -> 4
 # mountain_bike.parts + road_bike.parts
 # -> NoMethodError: undefined method `+'
 #      for #<Parts:....>
+
+## Manufacturing Parts ##
+
+# Look back at lines 4–7 above. The Part objects held in the chain, 
+# mountain_tire, and so on, variables were created so long ago that 
+# you may already have forgotten them. Think about the body of 
+# knowledge that these four lines represent. Somewhere in your 
+# application, some object had to know how to create these Part 
+# objects. And here, on lines 4–7 above, this place has to know that 
+# these four specific objects go with mountain bikes.
+
+# This is a lot of knowledge and it can easily leak all over your 
+# application. This leakage is both unfortunate and unnecessary. 
+# Although there are lots of different individual parts, there are 
+# only a few valid combinations of parts. Everything would be easier 
+# if you could describe the different bikes and then use your 
+# descriptions to magically manufacture the correct Parts object for 
+# any bike.
+
+# It’s easy to describe the combination of parts that make up a 
+# specific bike. The code below does this with a simple 2-dimensional 
+# array, where each row contains three possible columns. The first 
+# column contains the part name ('chain', 'tire_size', etc.), the 
+# second, the part description ('10-speed', '23', etc.) and the third 
+# (which is optional), a Boolean that indicates whether this part 
+# needs a spare. Only 'front_shock' on line 9 below puts a value in 
+# this third column, the other parts would like to default to true, 
+# as they require spares.
+
+############## Page 176 ##############
+road_config = [
+  ['chain',        '10-speed'],
+  ['tire_size',    '23'],
+  ['tape_color',   'red']
+]
+
+mountain_config = [
+  ['chain',        '10-speed'],
+  ['tire_size',    '2.1'],
+  ['front_shock',  'Manitou', false],
+  ['rear_shock',   'Fox']
+]
+
+# Unlike a hash, this simple 2-dimensional array provides no 
+# structural information. However, you understand how this structure 
+# is organized and you can encode your knowledge into a new object 
+# that manufactures Parts.
