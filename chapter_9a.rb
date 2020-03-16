@@ -339,3 +339,84 @@
 # inflated self-view as an excuse to avoid tests. While it sometimes 
 # makes sense to write a bit of code the old fashioned way, you 
 # should err on the side of test-first.
+
+# **
+### Knowing How to Test ###
+# Anyone can create a new Ruby testing framework and sometimes it 
+# seems that everyone has. The next shiny new framework may contain a 
+# feature that you just can’t live without; if you understand the 
+# costs and benefits, feel free to choose any framework that suits 
+# you.
+
+# However, there are many good reasons to stay within the testing 
+# mainstream. The frameworks with the most use have the best support. 
+# They are speedily updated to ensure compatibility with new releases 
+# of Ruby (and of Rails) and so present no obstacle to keeping 
+# current. Their large user base biases them towards maintaining 
+# backward compatibility; it’s unlikely they’ll change in such a way 
+# as to force a rewrite of all your tests. And because they are 
+# widely adopted, it’s easy to find programmers who have experience 
+# using them.
+# As of this writing, the mainstream frameworks are MiniTest, from 
+# Ryan Davis and seattle.rb and bundled with Ruby as of version 1.9, 
+# and RSpec, from David Chelimsky and the RSpec team. These 
+# frameworks have different philosophies and while you may naturally 
+# lean towards one or the other, both are excellent choices.
+
+# Not only must you choose a framework, you must grapple with 
+# alternative styles of testing: 
+#   Test Driven Development (TDD) and 
+#   Behavior Driven Development (BDD). 
+# Here the decision is not so clear-cut. TDD and BDD may appear to be 
+# in opposition but they are best viewed as on a continuum like 
+# Figure 9.3, where your values and experience dictate the choice of 
+# where to stand.
+# Both styles create code by writing tests first. BDD takes an 
+# outside-in approach, creating objects at the boundary of an 
+# application and working its way inward, mocking as necessary to 
+# supply as-yet-unwritten objects. TDD takes an inside-out approach, 
+# usually starting with tests of domain objects and then reusing 
+# these newly created domain objects in the tests of adjacent layers 
+# of code.
+# Past experience or inclination may render one style more suitable 
+# for you than the other, but both are completely acceptable. Each 
+# has costs and benefits.
+
+# When testing, it’s useful to think of your application’s objects as 
+# divided into two major categories. The first category contains the 
+# object that you’re testing, referred to from now on as the object 
+# under test. The second category contains everything else.
+# Your tests must obviously know things about the first category, 
+# that is, about the object under test, but they should remain as 
+# ignorant as possible about the second. Pretend that the rest of the 
+# application is opaque, that the only information available during 
+# the test is that which can be gained from looking at the object 
+# under test.
+# Once you dial your testing focus down to the specific object under 
+# test, you’ll need to choose a testing point-of-view. Your tests 
+# could stand completely inside of the object under test, with 
+# effective access to all of its internals. This is a bad idea, 
+# however, because it allows knowledge that should be private to the 
+# object to leak into the tests, increasing coupling between them and 
+# raising the likelihood that changes to code will require changes in 
+# tests. It’s better for tests to assume a viewpoint that sights 
+# along the edges of the object under test, where they can know only 
+# about messages that come and go.
+
+# ------------------------------------------------------------
+# MiniTest Framework
+# The tests in this chapter are written using MiniTest. This is not 
+# an endorsement of one framework over another, rather a recognition 
+# of the fact that examples written in MiniTest will run anywhere 
+# Ruby 1.9 or above is installed. You can duplicate and experiment 
+# with these examples without installing additional software.
+
+# By the time you read this chapter MiniTest may have changed. 
+# Perfect strangers may well have improved this software and given 
+# you those improvements free of charge; such is the life of the open 
+# source developer. Regardless of how MiniTest may have evolved, the 
+# principles illustrated below hold true. Don’t get distracted by 
+# changes in syntax; concentrate on understanding the underlying 
+# goals of the tests. Once you understand these goals, you can 
+# achieve them via any testing framework.
+# ------------------------------------------------------------
