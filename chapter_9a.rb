@@ -420,3 +420,59 @@
 # goals of the tests. Once you understand these goals, you can 
 # achieve them via any testing framework.
 # ------------------------------------------------------------
+
+## Testing Incoming Messages ##
+# Incoming messages make up an object’s public interface, the face it 
+# presents to the world. These messages need tests because other 
+# application objects depend on their signatures and on the results 
+# they return.
+
+require 'minitest/reporters'
+MiniTest::Unit.runner = MiniTest::SuiteRunner.new
+MiniTest::Unit.runner.reporters << MiniTest::Reporters::SpecReporter.new
+require 'minitest/autorun'
+
+############## Page 201 ##############
+class Wheel
+  attr_reader :rim, :tire
+
+  def initialize(rim, tire)
+    @rim    = rim
+    @tire   = tire
+  end
+
+  def diameter
+    rim + (tire * 2)
+  end
+# ...
+end
+
+class Gear
+  attr_reader :chainring, :cog, :rim, :tire
+
+  def initialize(args)
+    @chainring = args[:chainring]
+    @cog       = args[:cog]
+    @rim       = args[:rim]
+    @tire      = args[:tire]
+  end
+
+  def gear_inches
+    ratio * Wheel.new(rim, tire).diameter
+  end
+
+  def ratio
+    chainring / cog.to_f
+  end
+# ...
+end
+
+# Table 9.1 shows the messages (other than those that return simple 
+# attributes) that cross these object’s boundaries. Wheel responds to 
+# one incoming message, diameter (which in turn is sent by, or 
+# outgoing from, Gear) and Gear responds to two incoming messages, 
+# gear_inches and ratio.
+
+# The opening paragraph of this section stated that every incoming 
+# message is part of an object’s public interface and so must be 
+# tested. Now it’s time to add a slight caveat to this rule.
