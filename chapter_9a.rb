@@ -75,3 +75,87 @@
 # stop testing but instead to get better at it. Getting good value 
 # from tests requires clarity of intention and knowing what, when, 
 # and how to test.
+
+# ***
+### Knowing Your Intentions ###
+# Testing has many potential benefits, some obvious, others more obscure. A thorough understanding of these benefits will increase your motivation to achieve them.
+
+#### Finding Bugs ####
+# Finding faults, or bugs, early in the development process yields 
+# big dividends. Not only is it easier to find and fix a bug nearer 
+# in time to its creation, but getting the code right earlier rather 
+# than later can have unexpected positive effects on the resulting 
+# design. Knowing that you can (or can’t) do something early on may 
+# cause you to choose alternatives in the present that alter the 
+# design options available in the future. Also, as code accumulates, 
+# embedded bugs acquire dependencies. Fixing these bugs late in the 
+# process may necessitate changing a lot of dependent code. Fixing 
+# bugs early always lowers costs.
+
+#### Supplying Documentation ####
+# Tests provide the only reliable documentation of design. The story 
+# they tell remains true long after paper documents become obsolete 
+# and human memory fails. Write your tests as if you expect your 
+# future self to have amnesia. Remember that you will forget; write 
+# tests that remind you of the story once you have.
+
+#### Deferring Design Decisions ####
+# Tests allow you to safely defer design decisions. As your design 
+# skills improve you will begin to write applications that are 
+# sprinkled with places where you know the design needs something but 
+# you don’t yet have enough information to know exactly what. These 
+# are the places where you are awaiting additional information, 
+# valiantly resisting the forces that compel you to commit to a 
+# specific design.
+# These “pending” decision points are often coded as slightly 
+# embarrassing, extremely concrete hacks hidden behind totally 
+# presentable interfaces. This situation occurs when you are aware of 
+# just one concrete case in the present but you fully expect new 
+# cases to arrive in the near future. You know that at some point you 
+# will be better served by code that handles these many concrete 
+# cases as a single abstraction, but right now you don’t have enough 
+# information to anticipate what that abstraction will be.
+# When your tests depend on interfaces you can refactor the 
+# underlying code with reckless abandon. The tests verify the 
+# continued good behavior of the interface and changes to the 
+# underlying code do not force rewrites of the tests. Intentionally 
+# depending on interfaces allows you to use tests to put off design 
+# decisions safely and without penalty.
+
+#### Supporting Abstractions ####
+# When more information finally arrives and you make the next design 
+# decision, you’ll change the code in ways that increase its level of 
+# abstraction. Herein lies another of the benefits of tests on design.
+# Good design naturally progresses toward small independent objects 
+# that rely on abstractions. The behavior of a well-designed 
+# application gradually becomes the result of interactions among 
+# these abstractions. Abstractions are wonderfully flexible design 
+# components but the improvements they provide come at one slight 
+# cost: While each individual abstraction might be easy to 
+# understand, there is no single place in the code that makes obvious 
+# the behavior of the whole.
+# As the code base expands and the number of abstractions grows, 
+# tests become increasingly necessary. There is a level of design 
+# abstraction where it is almost impossible to safely make any change 
+# unless the code has tests. Tests are your record of the interface 
+# of every abstraction and as such they are the wall at your back. 
+# They let you put off design decisions and create abstractions to 
+# any useful depth.
+
+#### Exposing Design Flaws ####
+# The next benefit of tests is that they expose design flaws in the 
+# underlying code. If a test requires painful setup, the code expects 
+# too much context. If testing one object drags a bunch of others 
+# into the mix, the code has too many dependencies. If the test is 
+# hard to write, other objects will find the code difficult to reuse.
+# Tests are the canary in the coal mine; when the design is bad, 
+# testing is hard.
+# The inverse, however, is not guaranteed to be true. Costly tests do 
+# not necessarily mean that the application is poorly designed. It is 
+# quite technically possible to write bad tests for well-designed 
+# code. Therefore, for tests to lower your costs, both the underlying 
+# application and the tests must be well-designed.
+
+# Your goal is to gain all of the benefits of testing for the least 
+# cost possible. The best way to achieve this goal is to write 
+# loosely coupled tests about only the things that matter.
