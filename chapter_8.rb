@@ -982,3 +982,116 @@ puts recumbent_bike.spares
 
 # Inheritance is a better solution when its use provides high rewards 
 # for low risk
+
+# **
+### Accepting the Consequences of Inheritance ###
+# Making wise choices about using inheritance requires a clear 
+# understanding of its costs and benefits.
+
+# ***
+#### Benefits of Inheritance ####
+# Chapter 2, Designing Classes with a Single Responsibility, 
+# outlined four goals for code: it should be transparent, 
+# reasonable, usable, and exemplary. Inheritance, when correctly 
+# applied, excels at the second, third, and fourth goals.
+
+# Methods defined near the top of inheritance hierarchies have 
+# widespread influence because the height of the hierarchy acts as a 
+# lever that multiplies their effects. Changes made to these methods 
+# ripple down the inheritance tree. Correctly modeled hierarchies 
+# are thus extremely reasonable; big changes in behavior can be 
+# achieved via small changes in code.
+
+# Use of inheritance results in code that can be described as 
+# open–closed; hierarchies are open for extension while remaining 
+# closed for modification. Adding a new subclass to an existing 
+# hierarchy requires no changes to existing code. Hierarchies are 
+# thus usable; you can easily create new subclasses to accommodate 
+# new variants.
+# Correctly written hierarchies are easy to extend. The hierarchy 
+# embodies the abstraction and every new subclass plugs in a few 
+# concrete differences. The existing pattern is easy to follow and 
+# replicating it will be the natural choice of any programmer 
+# charged with creating new subclasses. Hierarchies are therefore 
+# exemplary; by their nature they provide guidance for writing the 
+# code to extend them.
+
+# You need look no farther than the source of object-oriented 
+# languages themselves to see the value of organizing code using 
+# inheritance. In Ruby, the Numeric class provides an excellent 
+# example. Integer and Float are modeled as subclasses of Numeric; 
+# this is-a relationship is exactly right. Integers and floats are 
+# fundamentally numbers. Allowing these two classes to share a 
+# common abstraction is the most parsimonious way to organize code.
+
+# ***
+#### Costs of Inheritance ####
+# Concerns about the use of inheritance fall into two different areas. 
+# The first fear is that you might be fooled into choosing 
+# inheritance to solve the wrong kind of problem. If you make this 
+# mistake a day will come when you need to add behavior but find 
+# there’s no easy way do so. Because the model is incorrect, the new 
+# behavior won’t fit; in this case you’ll be forced to duplicate or 
+# restructure code.
+# Second, even when inheritance makes sense for the problem, you 
+# might be writing code that will be used by others for purposes you 
+# did not anticipate. These other programmers want the behavior you 
+# have created but may not be able to tolerate the dependencies that 
+# inheritance demands.
+
+# The previous section on the benefits of inheritance was careful to 
+# qualify its assertions as applying only to a “correctly modeled 
+# hierarchy.” Imagine reasonable, usable and exemplary as two-sided 
+# coins. The benefit side represents the wonderful gains that 
+# inheritance provides. If you apply inheritance to a problem for 
+# which it is not suited, you effectively flip these coins over and 
+# encounter a parallel detriment.
+# The flip side of the reasonable coin is the very high cost of 
+# making changes near the top of an incorrectly modeled hierarchy. 
+# In this case, the leveraging effect works to your disadvantage; 
+# small changes break everything.
+# The opposing side of the usable coin is the impossibility of 
+# adding behavior when new subclasses represent a mixture of types. 
+# The Bicycle hierarchy in Chapter 6 failed when the need for 
+# recumbent mountain bikes appeared. This hierarchy already contains 
+# subclasses for MountainBike and RecumbentBike; combining the 
+# qualities of these two classes into a single object is not 
+# possible in the hierarchy as it currently exists. You cannot reuse 
+# existing behavior without changing it.
+
+# The other side of the exemplary coin is the chaos that ensues when 
+# novice programmers attempt to extend incorrectly modeled 
+# hierarchies. These inadequate hierarchies should not be extended, 
+# they need to be refactored, but novices do not have the skills to 
+# do so. Novices are forced to duplicate existing code or to add 
+# dependencies on class names, both of which serve to exacerbate 
+# existing design problems.
+
+# Inheritance, therefore, is a place where the question “What will 
+# happen when I’m wrong?” assumes special importance. Inheritance by 
+# definition comes with a deeply embedded set of dependencies. 
+# Subclasses depend on the methods defined in their superclasses and 
+# on the automatic delegation of messages to those superclasses. 
+# This is classical inheritance’s greatest strength and biggest 
+# weakness; subclasses are bound, irrevocably and by design, to the 
+# classes above them in the hierarchy. These built-in dependencies 
+# amplify the effects of modifications made to superclasses. 
+# Enormous, broad-reaching changes of behavior can be achieved with 
+# very small changes in code.
+# This is true, for better or for worse, whether you come to regret 
+# it or not.
+
+# Finally, your consideration of the use of inheritance should be 
+# tempered by your expectations about the population who will use 
+# your code. If you are writing code for an in-house application in 
+# a domain with which you are intimately familiar, you may be able 
+# to predict the future well enough to be confident that your design 
+# problem is one for which inheritance is a cost-effective solution. 
+# As you write code for a wider audience, your ability to anticipate 
+# needs necessarily decreases and the suitability of requiring 
+# inheritance as part of the interface goes down.
+
+# Avoid writing frameworks that require users of your code to 
+# subclass your objects in order to gain your behavior. Their 
+# application’s objects may already be arranged in a hierarchy; 
+# inheriting from your framework may not be possible.
