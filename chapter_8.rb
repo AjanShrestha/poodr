@@ -954,3 +954,31 @@ puts recumbent_bike.spares
 # with both terms you can use composition to refer to both kinds of 
 # relationships and be more explicit only if the need arises.
 # ------------------------------------------------------
+
+# **
+## Deciding Between Inheritance and Composition ##
+
+# Remember that classical inheritance is a code arrangement 
+# technique. Behavior is dispersed among objects and these objects 
+# are organized into class relationships such that automatic 
+# delegation of messages invokes the correct behavior. Think of it 
+# this way: For the cost of arranging objects in a hierarchy, you get 
+# message delegation for free.
+
+# Composition is an alternative that reverses these costs and 
+# benefits. In composition, the relationship between objects is not 
+# codified in the class hierarchy; instead objects stand alone and as 
+# a result must explicitly know about and delegate messages to one 
+# another. Composition allows objects to have structural 
+# independence, but at the cost of explicit message delegation.
+
+# Now that you’ve seen examples of inheritance and composition you 
+# can begin to think about when to use them. The general rule is 
+# that, faced with a problem that composition can solve, you should 
+# be biased towards doing so. If you cannot explicitly defend 
+# inheritance as a better solution, use composition. Composition 
+# contains far fewer built-in dependencies than inheritance; it is 
+# very often the best choice.
+
+# Inheritance is a better solution when its use provides high rewards 
+# for low risk
