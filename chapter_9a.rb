@@ -428,6 +428,7 @@
 # they return.
 
 require 'minitest/reporters'
+Minitest::Reporters.use!
 MiniTest::Unit.runner = MiniTest::SuiteRunner.new
 MiniTest::Unit.runner.reporters << MiniTest::Reporters::SpecReporter.new
 require 'minitest/autorun'
@@ -506,3 +507,90 @@ end
 # deleted code from revision control. Regardless of whether you do it 
 # with joy or in pain, delete the code. Unused code costs more to 
 # keep than to recover.
+
+### Proving the Public Interface ###
+# Incoming messages are tested by making assertions about the value, 
+# or state, that their invocation returns. The first requirement for 
+# testing an incoming message is to prove that it returns the correct 
+# value in every possible situation.
+
+# The following code shows a test of Wheel’s diameter method. Line 4 
+# creates an instance of Wheel and line 6 asserts that this Wheel has 
+# a diameter of 29.
+
+############## Page 203 ##############
+class WheelTest < MiniTest::Unit::TestCase
+
+  def test_calculates_diameter
+    wheel = Wheel.new(26, 1.5)
+
+    assert_in_delta(29,
+                    wheel.diameter,
+                    0.01)
+  end
+end
+
+# This test is extremely simple and it invokes very little code. 
+# Wheel has no hidden dependencies so no other application objects 
+# get created as a side effect of running this test. Wheel’s design 
+# allows you to test it independently of every other class in your 
+# application.
+
+# Testing Gear is a bit more interesting. Gear requires a few more 
+# arguments than Wheel, but even so the overall structure of these 
+# two tests is very similar. In the gear_inches test below, line 4 
+# creates a new instance of Gear and line 10 makes assertions about 
+# the results of the method.
+
+############## Page 203 ##############
+class GearTest < MiniTest::Unit::TestCase
+
+  def test_calculates_gear_inches
+    gear = Gear.new(
+      chainring: 52,
+      cog:       11,
+      rim:       26,
+      tire:      1.5
+    )
+
+    assert_in_delta(137.1,
+                    gear.gear_inches,
+                    0.01)
+  end
+end
+
+# This new gear_inches test looks a lot like Wheel’s diameter test 
+# but don’t be fooled by appearances. This test has entanglements 
+# that the diameter test did not have. Gear’s implementation of 
+# gear_inches unconditionally creates and uses another object, Wheel. 
+# Gear and Wheel are coupled in the code and in the tests, though 
+# it’s not obvious here.
+
+# The fact that Gear’s gear_inches method creates and uses another 
+# object affects how long this test runs and how likely it is to 
+# suffer unintended consequences as a result of changes to unrelated 
+# parts of the application. The coupling that creates this problem, 
+# however, is hidden inside of Gear and so totally invisible in this 
+# test. The test’s purpose is to prove that gear_inches returns the 
+# right result and it certainly fulfills that requirement, but the 
+# way the underlying code is structured adds hidden risk.
+# If Wheels are expensive to create, the Gear test pays that cost 
+# even though it has no interest in Wheel. If Gear is correct but 
+# Wheel is broken, the Gear test might fail in a misleading way, at a 
+# place far distant from the code you’re trying to test.
+
+# Tests run fastest when they execute the least code and the volume 
+# of external code that a test invokes is directly related to your 
+# design. An application constructed of tightly coupled, 
+# dependent-laden objects is like a tapestry where pulling on one 
+# thread drags the entire rug along. When tightly coupled objects are 
+# tested, a test of one object runs code in many others. If the code 
+# were such that Wheel were also coupled to other objects, this 
+# problem is magnified; running the Gear test would then create a 
+# large network of objects, any of which might break in a maddeningly 
+# confusing way.
+
+# These problems are manifested in, but are not unique to, the tests. 
+# Because tests are the first reuse of code, this problem is but a 
+# harbinger of things to come for your application as a whole.
+
