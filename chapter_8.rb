@@ -1155,3 +1155,110 @@ puts recumbent_bike.spares
 # at prescribing rules for assembling an object made of parts but 
 # doesn’t provide as much help for the problem of arranging code for 
 # a collection of parts that are very nearly identical.
+
+# ***
+### Choosing Relationships ###
+# Classical inheritance (Chapter 6), behavior sharing via modules 
+# (Chapter 7, Sharing Role Behavior with Modules) and composition 
+# are each the perfect solution for the problem they solve. The 
+# trick to lowering your application costs is to apply each 
+# technique to the right problem.
+
+# Some of the grand masters of object-oriented design have given 
+# advice about using inheritance and composition.
+# • “Inheritance is specialization.”—Bertrand Meyer, Touch of Class: 
+#   Learning to Program Well with Objects and Contracts
+# • “Inheritance is best suited to adding functionally to existing 
+#   classes when you will use most of the old code and add 
+#   relatively small amounts of new code.” —— Erich Gamma, Richard 
+#   Helm, Ralph Johnson, and John Vlissides, Design Patterns: 
+#   Elements of Reusable Object-Oriented Software
+# • “Use composition when the behavior is more than the sum of its 
+#   parts.”—para- phrase of Grady Booch, Object-Oriented Analysis 
+#   and Design
+
+# **
+# Use Inheritance for is-a Relationships
+# When you select inheritance over composition you are placing a bet 
+# that the benefits thereby accrued will outweigh the costs. Some 
+# bets are more likely to pay off than others. Small sets of 
+# real-world objects that fall naturally into static, transparently 
+# obvious specialization hierarchies are candidates to be modeled 
+# using classical inheritance.
+
+# Imagine a game where players race bicycles. Players assemble their 
+# bikes by “buying” parts. One of the parts they can buy is a shock. 
+# The game provides six nearly identical shocks; each differs 
+# slightly in cost and behavior.
+# All of these shocks are, well, shocks. Their “shock-ness” is at 
+# the core of their identity. Shocks exist in no more atomic 
+# category. Variants of shocks are far more alike than they are 
+# different. The most accurate and descriptive statement that you 
+# can make about any one of the variants is that it is-a shock.
+# Inheritance is perfect for this problem. Shocks can be modeled as 
+# a shallow narrow hierarchy. The hierarchy’s small size makes it 
+# understandable, intention revealing, and easily extendable. 
+# Because these objects meet the criteria for successful use of 
+# inheritance, the risk of being wrong is low, but in the unlikely 
+# event that you are wrong, the cost of changing your mind is also 
+# low. You can achieve the benefits of inheritance while exposing 
+# yourself to few of its risks.
+
+# In terms of this Chapter’s example, each different shock plays the 
+# role of Part. It inherits common shock behavior and the Part role 
+# from its abstract Shock superclass. The PartsFactory currently 
+# assumes that every part can be represented by the Part OpenStruct, 
+# but you could easily extend the part configuration array to supply 
+# the class name for a specific shock. Because you already think of 
+# Part as an interface, it’s easy to plug in a new kind of part, 
+# even if this part uses inheritance to get some of its behavior.
+# If requirements change such that there is an explosion in the 
+# kinds of shocks, reassess this design decision. Perhaps it still 
+# holds, perhaps not. If modeling a bevy of new shocks requires 
+# dramatically expanding the hierarchy, or if the new shocks don’t 
+# conveniently fit into the existing code, reconsider alternatives 
+# at that time.
+
+# **
+# Use Duck Types for behaves-like-a Relationships
+# Some problems require many different objects to play a common 
+# role. In addition to their core responsibilities, objects might 
+# play roles like schedulable, preparable, printable, or persistable.
+
+# There are two key ways to recognize the existence of a role. 
+# First, although an object plays it, the role is not the object’s 
+# main responsibility. A bicycle behaves-like-a schedulable but it 
+# is-a bicycle. Second, the need is widespread; many otherwise 
+# unrelated objects share a desire to play the same role.
+
+# The most illuminating way to think about roles is from the 
+# outside, from the point of view of a holder of a role player 
+# rather than that of a player of a role. The holder of a 
+# schedulable expects it to implement Schedulable’s interface and to 
+# honor Schedulable’s contract. All schedulables are alike in that 
+# they must meet these expectations.
+# Your design task is to recognize that a role exists, define the 
+# interface of its duck type and provide an implementation of that 
+# interface for every possible player. Some roles consist only of 
+# their interface, others share common behavior. Define the common 
+# behavior in a Ruby module to allow objects to play the role 
+# without duplicating the code.
+
+# **
+# Use Composition for has-a Relationships
+# Many objects contain numerous parts but are more than the sums of 
+# those parts. Bicycles have-a Parts, but the bike itself is 
+# something more. It has behavior that is separate from and in 
+# addition to the behavior of its parts. Given the current 
+# requirements of the bicycle example, the most cost-effective way 
+# to model the Bicycle object is via composition.
+
+# This is-a versus has-a distinction is at the core of deciding 
+# between inheritance and composition. The more parts an object has, 
+# the more likely it is that it should be modeled with composition. 
+# The deeper you drill down into individual parts, the more likely 
+# it is that you’ll discover a specific part that has a few 
+# specialized variants and is thus a reasonable candidate for 
+# inheritance. For every problem, assess the costs and benefits of 
+# alternative design techniques and use your judgment and experience 
+# to make the best choice.
