@@ -492,3 +492,15 @@ end
 # consider requiring these subclasses to pass your subclass 
 # responsibility test to ensure they don’t accidentally become 
 # obsolete.
+
+## Summary ##
+# Tests are indispensable. Well-designed applications are highly 
+# abstract and under constant pressure to evolve; without tests these 
+# applications can neither be understood nor safely changed. The best 
+# tests are loosely coupled to the underlying code and test 
+# everything once and in the proper place. They add value without 
+# increasing costs.
+
+# A well-designed application with a carefully crafted test suite is 
+# a joy to behold and a pleasure to extend. It can adapt to every new 
+# circumstance and meet any unexpected need.
