@@ -34,3 +34,25 @@
 #     distracts the readers from its main purpose and encourages them 
 #     to break encapsulation and to depend on these methods. Your 
 #     tests should hide private methods, not expose them.
+
+### Removing Private Methods from the Class Under Test ###
+# One way to sidestep this entire problem is to avoid private methods 
+# altogether. If you have no private methods, you need not be 
+# concerned for their tests.
+
+# **
+# An object with many private methods exudes the design smell of 
+# having too many responsibilities. If your object has so many 
+# private methods that you dare not leave them untested, consider 
+# extracting the methods into new object. The extracted methods form 
+# the core of the responsibilities of the new object and so make up 
+# its public interface, which is (theoretically) stable and thus safe 
+# to depend upon.
+# This strategy is a good one, but unfortunately is only truly 
+# helpful if the new interface is indeed stable. Sometimes the new 
+# interface is not, and it is at this point that theory and practice 
+# part ways. This new public interface will be exactly as stable (or 
+# as unstable) as was the original private interface. Methods don’t 
+# magically become more reliable just because they got moved. It is 
+# costly to couple to unstable methods—regardless of whether they are 
+# portrayed as public or private.
