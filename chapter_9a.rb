@@ -476,3 +476,33 @@ end
 # The opening paragraph of this section stated that every incoming 
 # message is part of an object’s public interface and so must be 
 # tested. Now it’s time to add a slight caveat to this rule.
+
+### Deleting Unused Interfaces ###
+
+# Incoming messages ought to have dependents. As you can see from 
+# Table 9.1, this is true for diameter, gear_inches, and ratio where 
+# they are incoming messages. Some object other than the original 
+# implementer depends on each of these messages.
+
+# If you draw this table for the object under test and find a 
+# purported incoming message that does not have dependents, you 
+# should view that message with great suspicion. What purpose is 
+# served by implementing a message that no one sends? It’s not really 
+# incoming at all, it’s a speculative implementation that reeks of 
+# guessing about the future and clearly anticipates requirements that 
+# do not exist.
+
+# **
+# Do not test an incoming message that has no dependents; delete it. 
+# You application is improved by ruthlessly eliminating code that is 
+# not actively being used. Such code is negative cash flow, it adds 
+# testing and maintenance burdens but provides no value. Deleting 
+# unused code saves money right now, if you do not do so you must 
+# test it.
+# Overcome any reluctance that you feel; practicing this pruning will 
+# teach you its value. Until such time as you are completely 
+# convinced of the rightness of this strategy you may console 
+# yourself with the knowledge that in extremity you can recover 
+# deleted code from revision control. Regardless of whether you do it 
+# with joy or in pain, delete the code. Unused code costs more to 
+# keep than to recover.
