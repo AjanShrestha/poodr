@@ -316,3 +316,179 @@ end
 #   PASS test_responds_to_chain
 #   PASS test_responds_to_spares
 #   PASS test_forces_subclasses_to_implement_default_tire_size
+
+### Testing Unique Behavior ###
+# The inheritance tests have so far concentrated on testing common 
+# qualities. Most of the resulting tests were shareable and ended up 
+# being placed in modules (BicycleInterfaceTest and 
+# BicycleSubclassTest), although one test 
+# (forces_subclasses_to_implement_default_tire_size) did get placed 
+# directly into BicycleTest.
+
+# Now that you have dispensed with the common behavior, two gaps 
+# remain. There are as yet no tests for specializations, neither for 
+# the ones provided by the concrete subclasses nor for those defined 
+# in the abstract superclass. The following section concentrates on 
+# the first; it tests specializations supplied by individual 
+# subclasses. The section after moves the focus upward in the 
+# hierarchy and tests behavior that is unique to Bicycle.
+
+#### Testing Concrete Subclass Behavior ####
+# Now is the time to renew your commitment to writing the absolute 
+# minimum number of tests. Look back at the RoadBike class. The 
+# shared modules already prove most of its behavior. The only thing 
+# left to test are the specializations that RoadBike supplies.
+
+# It’s important to test these specializations without embedding 
+# knowledge of the superclass into the test. For example, RoadBike 
+# implements local_spares and also responds to spares. The 
+# RoadBikeTest should ensure that local_spares works while 
+# maintaining deliberate ignorance about the existence of the spares 
+# method. The shared BicycleInterfaceTest already proves that 
+# RoadBike responds correctly to spares, it is redundant and 
+# ultimately limiting to reference that method directly in this test.
+
+# The local_spares method, however, is clearly RoadBike’s 
+# responsibility. Line 9 below tests this specialization directly in 
+# RoadBikeTest:
+
+############## Page 236 ##############
+class RoadBikeTest < MiniTest::Unit::TestCase
+  include BicycleInterfaceTest
+  include BicycleSubclassTest
+
+  def setup
+    @bike = @object = RoadBike.new(tape_color: 'red')
+  end
+
+  def test_puts_tape_color_in_local_spares
+    assert_equal 'red', @bike.local_spares[:tape_color]
+  end
+end
+
+# Running RoadBikeTest now shows that it meets its common 
+# responsibilities and also supplies its own specializations:
+# RoadBikeTest
+#   PASS test_responds_to_default_chain
+#   PASS test_responds_to_default_tire_size 
+#   PASS test_puts_tape_color_in_local_spares 
+#   PASS test_responds_to_spares
+#   PASS test_responds_to_size
+#   PASS test_responds_to_local_spares
+#   PASS test_responds_to_post_initialize 
+#   PASS test_responds_to_tire_size
+#   PASS test_responds_to_chain
+
+#### Testing Abstract Superclass Behavior ####
+# Now that you have tested the subclass specializations it’s time to 
+# step back and finish testing the superclass. Moving your focus up 
+# the hierarchy to Bicycle reintroduces a previously encountered 
+# problem; Bicycle is an abstract superclass. Creating an instance of 
+# Bicycle is not only hard but the instance might not have all the 
+# behavior you need to make the test run.
+
+# Fortunately, your design skills provide a solution. Because Bicycle 
+# used template methods to acquire concrete specializations you can 
+# stub the behavior that would normally be supplied by subclasses. 
+# Even better, because you understand the Liskov Substitution 
+# Principle, you can easily manufacture a testable instance of 
+# Bicycle by creating a new subclass for use solely by this test.
+
+# The test below follows just such a strategy. Line 1 defines a new 
+# class, StubbedBike, as a subclass of Bicycle. The test creates an 
+# instance of this class (line 15) and uses it to prove that Bicycle 
+# correctly includes the subclass’s local_spares contribution in 
+# spares (line 23).
+
+# It remains convenient to sometimes create an instance of the 
+# abstract Bicycle class, even though this requires passing the 
+# tire_size argument, as on line 14. This instance of Bicycle 
+# continues to be used in the test on line 18 to prove that the 
+# abstract class forces subclasses to implement default_tire_size.
+
+# These two kinds of Bicycles coexist peacefully in the test, as you see here:
+
+############## Page 238 ##############
+class StubbedBike < Bicycle
+  def default_tire_size
+    0
+  end
+  def local_spares
+    {saddle: 'painful'}
+  end
+end
+
+class BicycleTest < MiniTest::Unit::TestCase
+  include BicycleInterfaceTest
+
+  def setup
+    @bike = @object = Bicycle.new({tire_size: 0})
+    @stubbed_bike   = StubbedBike.new
+  end
+
+  def test_forces_subclasses_to_implement_default_tire_size
+    assert_raises(NotImplementedError) {
+      @bike.default_tire_size}
+  end
+
+  def test_includes_local_spares_in_spares
+    assert_equal @stubbed_bike.spares,
+                  { tire_size: 0,
+                    chain:     '10-speed',
+                    saddle:    'painful'}
+  end
+end
+
+# The idea of creating a subclass to supply stubs can be helpful in 
+# many situations. As long as your new subclass does not violate 
+# Liskov, you can use this technique in any test you like.
+
+# Running BicycleTest now proves that it includes subclass 
+# contributions on the spares list:
+# BicycleTest
+#   PASS test_responds_to_spares 
+#   PASS test_responds_to_tire_size
+#   PASS test_responds_to_default_chain
+#   PASS test_responds_to_default_tire_size
+#   PASS test_forces_subclasses_to_implement_default_tire_size 
+#   PASS test_responds_to_chain
+#   PASS test_includes_local_spares_in_spares
+#   PASS test_responds_to_size
+
+# One last point: If you fear that StubbedBike will become obsolete 
+# and permit BicycleTest to pass when it should fail, the solution is 
+# close at hand. There is already a common BicycleSubclassTest. Just 
+# as you used the Diameterizable InterfaceTest to guarantee 
+# DiameterDouble’s continued good behavior, you can use 
+# BicycleSubclassTest to ensure the ongoing correctness of 
+# StubbedBike. Add the following code to BicycleTest:
+
+############## Page 239 ##############
+class StubbedBikeTest < MiniTest::Unit::TestCase
+  include BicycleSubclassTest
+
+  def setup
+    @object = StubbedBike.new
+  end
+end
+
+# After you make this change, running BicycleTest produces this 
+# additional output:
+# StubbedBikeTest
+#   PASS test_responds_to_default_tire_size 
+#   PASS test_responds_to_local_spares
+#   PASS test_responds_to_post_initialize
+
+# Carefully written inheritance hierarchies are easy to test. Write 
+# one shareable test for the overall interface and another for the 
+# subclass responsibilities. Diligently isolate responsibilities. Be 
+# especially careful when testing subclass specializations to prevent 
+# knowledge of the superclass from leaking down into the subclass’s 
+# test.
+
+# Testing abstract superclasses can be challenging; use the Liskov 
+# Substitution Principle to your advantage. If you leverage Liskov 
+# and create new subclasses that are used exclusively for testing, 
+# consider requiring these subclasses to pass your subclass 
+# responsibility test to ensure they don’t accidentally become 
+# obsolete.
