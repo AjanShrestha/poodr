@@ -115,3 +115,86 @@ end
 # future maintainers to think of Wheel as a Diameterizable.
 # However, despite the invisibility of the role and this coupling to 
 # Wheel, structuring the test in this way has one very real advantage.
+
+### Injecting Dependencies Using Classes ###
+# When the code in your test uses the same collaborating objects as 
+# the code in your application, your tests always break when they 
+# should. The value of this cannot be underestimated.
+
+# Here’s a simple example. Imagine that Diameterizable’s public 
+# interface changes. Another programmer goes into the Wheel class and 
+# changes the diameter method’s name to width, as shown in line 8 
+# below.
+
+############## Page 207 ##############
+class Wheel
+  attr_reader :rim, :tire
+  def initialize(rim, tire)
+    @rim       = rim
+    @tire      = tire
+  end
+
+  def width   # <---- used to be 'diameter'
+    rim + (tire * 2)
+  end
+# ...
+end
+
+# Imagine further that this programmer failed to update the name of 
+# the sent message in Gear. Gear still sends diameter in its 
+# gear_inches method, as you can see in this reminder of Gear’s 
+# current code:
+
+############## Page 207 ##############
+class Gear
+  # ...
+  def gear_inches
+    ratio * wheel.diameter # <--- obsolete
+  end
+end
+
+############## Page ?? ##############
+# Full listing for above
+class Gear
+  attr_reader :chainring, :cog, :wheel
+  def initialize(args)
+    @chainring = args[:chainring]
+    @cog       = args[:cog]
+    @wheel     = args[:wheel]
+  end
+
+  def gear_inches
+    ratio * wheel.diameter
+  end
+
+  def ratio
+    chainring / cog.to_f
+  end
+# ...
+end
+
+# Because the Gear test injects an instance of Wheel and Wheel 
+# implements width but Gear sends diameter, the test now fails:
+#   Gear
+#     ERROR test_calculates_gear_inches
+#           undefined method 'diameter'
+
+# This failure is unsurprising, it is exactly what should happen when 
+# two concrete objects collaborate and the receiver of a message 
+# changes but its sender does not. Wheel has changed and as a result 
+# Gear needs to change. This test fails as it should.
+
+# The test is simple and the failure obvious because the code is so 
+# concrete, but like all concretions it works only for this specific 
+# case. Here, for this code, the test above is good enough, but there 
+# are other situations in which you are better served to locate and 
+# test the abstraction.
+
+# **
+# A more extreme example illuminates the problem. If there are 
+# hundreds of Diameterizables, how do you decide which is most 
+# intention revealing to inject during the test? What if 
+# Diameterizables are extremely costly, how do you avoid running lots 
+# of unnecessary, time-consuming code? Common sense suggests that if 
+# Wheel is the only Diameterizable and it is fast enough, the test 
+# should just inject a Wheel, but what if your choice is less obvious?
