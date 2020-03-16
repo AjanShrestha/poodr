@@ -624,3 +624,83 @@ mountain_config = [
 # structural information. However, you understand how this structure 
 # is organized and you can encode your knowledge into a new object 
 # that manufactures Parts.
+
+### Creating the PartsFactory ###
+
+# As discussed in Chapter 3, Managing Dependencies, an object that 
+# manufactures other objects is a factory. Your past experience in 
+# other languages may predispose you to flinch when you hear this 
+# word, but think of this as an opportunity to reclaim it. The word 
+# factory does not mean difficult, or contrived, or overly 
+# complicated; it’s merely the word OO designers use to concisely 
+# communicate the idea of an object that creates other objects. Ruby 
+# factories are simple and there’s no reason to avoid this intention 
+# revealing word.
+
+# The code below shows a new PartsFactory module. Its job is to take 
+# an array like one of those listed above and manufacture a Parts 
+# object. Along the way it may well create Part objects, but this 
+# action is private. Its public responsibility is to create a Parts.
+
+# This first version of PartsFactory takes three arguments, a config, 
+# and the names of the classes to be used for Part, and Parts. Line 6 
+# below creates the new instance of Parts, initializing it with an 
+# array of Part objects built from the information in the config.
+
+############## Page 177 ##############
+module PartsFactory
+  def self.build(config,
+                  part_class  = Part,
+                  parts_class = Parts)
+    parts_class.new(
+      config.collect {|part_config|
+        part_class.new(
+          name:           part_config[0],
+          description:    part_config[1],
+          needs_spare:    part_config.fetch(2, true)
+        )
+      }
+    )
+  end
+end
+
+# This factory knows the structure of the config array. It expects 
+# name to be in the first column, description to be in the second, 
+# and needs_spare to be in the third.
+
+# **
+# Putting knowledge of config’s structure in the factory has two 
+# consequences. First, the config can be expressed very tersely. 
+# Because PartsFactory understands config’s internal structure, 
+# config can be specified as an array rather than a hash. Second, 
+# once you commit to keeping config in an array, you should always 
+# create new Parts objects using the factory. To create new Parts via 
+# any other mechanism requires duplicating the knowledge
+
+# Now that PartsFactory exists, you can use the configuration arrays 
+# defined above to easily create new Parts, as shown here:
+
+############## Page 178 ##############
+road_parts = PartsFactory.build(road_config)
+# -> [#<Part:0x00000101825b70
+#       @name="chain",
+#       @description="10-speed",
+#       @needs_spare=true>,
+#     #<Part:0x00000101825b20
+#       @name="tire_size",
+#          etc ...
+
+mountain_parts = PartsFactory.build(mountain_config)
+# -> [#<Part:0x0000010181ea28
+#        @name="chain",
+#        @description="10-speed",
+#        @needs_spare=true>,
+#     #<Part:0x0000010181e9d8
+#        @name="tire_size",
+#        etc ...
+
+# **
+# PartsFactory, combined with the new configuration arrays, isolates 
+# all the knowledge needed to create a valid Parts. This 
+# information was previously dispersed throughout the application but 
+# now it is contained in this one class and these two arrays.
