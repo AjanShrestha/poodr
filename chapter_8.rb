@@ -1262,3 +1262,30 @@ puts recumbent_bike.spares
 # inheritance. For every problem, assess the costs and benefits of 
 # alternative design techniques and use your judgment and experience 
 # to make the best choice.
+
+## Summary ##
+# Composition allows you to combine small parts to create more 
+# complex objects such that the whole becomes more than the sum of 
+# its parts. Composed objects tend to consist of simple, discrete 
+# entities that can easily be rearranged into new combinations. 
+# These simple objects are easy to understand, reuse, and test, but 
+# because they combine into a more complicated whole, the operation 
+# of the bigger application may not be as easy to understand as that 
+# of the individual parts.
+
+# Composition, classical inheritance, and behavior sharing via 
+# modules are competing techniques for arranging code. Each has 
+# different costs and benefits; these differences predispose them to 
+# be better at solving slightly different problems.
+
+# **
+# These techniques are tools, nothing more, and you’ll become a 
+# better designer if you practice each of them. Learning to use them 
+# properly is a matter of experience and judgment, and one of the 
+# best ways to gain experience is to learn from your own mistakes. 
+# The key to improving your design skills is to attempt these 
+# techniques, accept your errors cheerfully, remain detached from 
+# past design decisions, and refactor mercilessly.
+# As you gain experience, you’ll get better at choosing the correct 
+# technique the first time, your costs will go down, and your 
+# applications will improve.
