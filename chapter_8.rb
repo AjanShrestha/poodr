@@ -354,3 +354,226 @@ puts mountain_bike.spares
 # the Part role. They don’t have to be a kind-of the Part class, they 
 # just have to act like one; that is, they must respond to name, 
 # description, and needs_spare.
+
+# **
+### Making the Parts Object More Like an Array ###
+
+# This code works but there’s definitely room for improvement. Step 
+# back for a minute and think about the parts and spares methods of 
+# Bicycle. These messages feel like they ought to return the same 
+# sort of thing, yet the objects that come back don’t behave in the 
+# same way. Look at what happens when you ask each for its size.
+
+############## Page 172 ##############
+puts mountain_bike.spares.size # -> 3
+# puts mountain_bike.parts.size
+# -> NoMethodError:
+#      undefined method `size' for #<Parts:...>
+
+# Failures like this will chase you around for as long as you own 
+# this code. These two things both seem like arrays. You will 
+# inevitably treat them as if they are, despite the fact that exactly 
+# one half of the time, the result will be like stepping on the 
+# proverbial rake in the yard. The Parts object does not behave like 
+# an array and all attempts to treat it as one will fail.
+
+# You can fix the proximate problem by adding a size method to Parts. 
+# This is a simple matter of implementing a method to delegate size 
+# to the actual array, as shown here:
+
+############## Page 173 ##############
+def size
+  parts.size
+end
+
+# However, this change starts the Parts class down a slippery slope. 
+# Do this, and it won’t be long before you’ll want Parts to respond 
+# to each, and then sort, and then everything else in Array. This 
+# never ends; the more array-like you make Parts, the more like an 
+# array you’ll expect it to be.
+# Perhaps Parts is an Array, albeit one with a bit of extra behavior. 
+# You could make it one; the next example shows a new version of the 
+# Parts class, now as a subclass of Array.
+
+############## Page 173 ##############
+# class Parts < Array
+#   def spares
+#     select {|part| part.needs_spare}
+#   end
+# end
+
+# The above code is a very straightforward expression of the idea 
+# that Parts is a specialization of Array; in a perfect 
+# object-oriented language this solution would be exactly correct. 
+# Unfortunately, the Ruby language has not quite achieved perfection 
+# and this design contains a hidden flaw.
+
+# This next example illustrates the problem. When Parts subclasses 
+# Array, it inherits all of Array’s behavior. This behavior includes 
+# methods like +, which adds two arrays together and returns a third. 
+# Lines 3 and 4 below show + combining two existing instances of 
+# Parts and saving the result into the combo_parts variable.
+
+# This appears to work; combo_parts now contains the correct number 
+# of parts (line 7). However, something is clearly not right. As line 
+# 12 shows, combo_parts cannot answer its spares.
+
+# The root cause of the problem is revealed by lines 15–17. Although 
+# the objects that got +’d together were instances of Parts, the 
+# object that + returned was an instance of Array, and Array does not 
+# understand spares.
+
+############## Page 174 ##############
+#  Parts inherits '+' from Array, so you can
+#    add two Parts together.
+# combo_parts =
+#   (mountain_bike.parts + road_bike.parts)
+
+# # '+' definitely combines the Parts
+# puts combo_parts.size            # -> 7
+
+# # but the object that '+' returns
+# #   does not understand 'spares'
+# puts combo_parts.spares
+# # -> NoMethodError: undefined method `spares'
+# #      for #<Array:...>
+
+# puts mountain_bike.parts.class   # -> Parts
+# puts road_bike.parts.class       # -> Parts
+# puts combo_parts.class           # -> Array !!!
+
+# **
+# It turns out that there are many methods in Array that return new 
+# arrays, and unfortunately these methods return new instances of the 
+# Array class, not new instances of your subclass. The Parts class is 
+# still misleading and you have just swapped one problem for another. 
+# Where once you were disappointed to find that Parts did not 
+# implement size, now you might be surprised to find that adding two 
+# Parts together returns a result that does not understand spares.
+# You’ve seen three different implementations of Parts. The first 
+# answers only the spares and parts messages; it does not act like an 
+# array, it merely contains one. The second Parts implementation adds 
+# size, a minor improvement that just returns the size of its 
+# internal array. The most recent Parts implementation subclasses 
+# Array and therefore gives the appearance of fully behaving like an 
+# array, but as the example above shows, an instance of Parts still 
+# displays unexpected behavior.
+# It has become clear that there is no perfect solution; it’s 
+# therefore time to make a difficult decision. Even though it cannot 
+# respond to size, the original Parts implementation may be good 
+# enough; if so, you can accept its lack of array-like behavior and 
+# revert to that version. If you need size and size alone, it may be 
+# best to add just this one method and so settle for the second 
+# implementation. If you can tolerate the possibility of confusing 
+# errors or you know with absolute certainty that you’ll never 
+# encounter them, it might make sense to subclass Array and walk 
+# quietly away.
+
+# Somewhere in the middle ground between complexity and usability 
+# lies the following solution. The Parts class below delegates size 
+# and each to its @parts array and includes Enumerable to get common 
+# traversal and searching methods. This version of Parts does not 
+# have all of the behavior of Array, but at least everything that it 
+# claims to do actually works.
+
+############## Page 175 ##############
+require 'forwardable'
+class Parts
+  extend Forwardable
+  def_delegators :@parts, :size, :each
+  include Enumerable
+
+  def initialize(parts)
+    @parts = parts
+  end
+
+  def spares
+    select {|part| part.needs_spare}
+  end
+end
+
+############## Page ?? ##############
+# Full listing for above
+class Bicycle
+  attr_reader :size, :parts
+
+  def initialize(args={})
+    @size       = args[:size]
+    @parts      = args[:parts]
+  end
+
+  def spares
+    parts.spares
+  end
+end
+
+require 'forwardable'
+class Parts
+  extend Forwardable
+  def_delegators :@parts, :size, :each
+  include Enumerable
+
+  def initialize(parts)
+    @parts = parts
+  end
+
+  def spares
+    select {|part| part.needs_spare}
+  end
+end
+
+class Part
+  attr_reader :name, :description, :needs_spare
+
+  def initialize(args)
+    @name         = args[:name]
+    @description  = args[:description]
+    @needs_spare  = args.fetch(:needs_spare, true)
+  end
+end
+
+#this duplicates #012
+chain =
+  Part.new(name: 'chain', description: '10-speed')
+
+road_tire =
+  Part.new(name: 'tire_size',  description: '23')
+
+tape =
+  Part.new(name: 'tape_color', description: 'red')
+
+mountain_tire =
+  Part.new(name: 'tire_size',  description: '2.1')
+
+rear_shock =
+  Part.new(name: 'rear_shock', description: 'Fox')
+
+front_shock =
+  Part.new(
+    name: 'front_shock',
+    description: 'Manitou',
+    needs_spare: false)
+
+# Sending + to an instance of this Parts results in a NoMethodError 
+# exception. However, because Parts now responds to size, each, and 
+# all of Enumerable, and obligingly raises errors when you mistakenly 
+# treat it like an actual Array, this code may be good enough. The 
+# following example shows that spares and parts can now both respond 
+# to size.
+
+############## Page 175 ##############
+mountain_bike =
+  Bicycle.new(
+    size:  'L',
+    parts: Parts.new([chain,
+                      mountain_tire,
+                      front_shock,
+                      rear_shock]))
+
+puts mountain_bike.spares.size   # -> 3
+puts mountain_bike.parts.size    # -> 4
+
+############## Page ??? ##############
+# mountain_bike.parts + road_bike.parts
+# -> NoMethodError: undefined method `+'
+#      for #<Parts:....>
