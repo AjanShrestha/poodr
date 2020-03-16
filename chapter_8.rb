@@ -1095,3 +1095,63 @@ puts recumbent_bike.spares
 # subclass your objects in order to gain your behavior. Their 
 # application’s objects may already be arranged in a hierarchy; 
 # inheriting from your framework may not be possible.
+
+# **
+### Accepting the Consequences of Composition ###
+# Objects built using composition differ from those built using 
+# inheritance in two basic ways. Composed objects do not depend on 
+# the structure of the class hierarchy, and they delegate their own 
+# messages. These differences confer a different set of costs and 
+# benefits.
+
+#### Benefits of Compositions ####
+# When using composition, the natural tendency is to create many 
+# small objects that contain straightforward responsibilities that 
+# are accessible through clearly defined interfaces. These 
+# well-composed objects excel when measured against several of 
+# Chapter 2’s goals for code.
+
+# These small objects have a single responsibility and specify their 
+# own behavior. They are transparent; it’s easy to understand the 
+# code and it’s clear what will happen if it changes. Also, the 
+# composed object’s independence from the hierarchy means that it 
+# inherits very little code and so is generally immune from 
+# suffering side effects as a result of changes to classes above it 
+# in the hierarchy.
+
+# Because composed objects deal with their parts via an interface, 
+# adding a new kind of part is a simple matter of plugging in a new 
+# object that honors the interface. From the point of view of the 
+# composed object, adding a new variant of an existing part is 
+# reasonable and requires no changes to its code.
+
+# By their very nature, objects that participate in composition are 
+# small, structurally independent, and have well-defined interfaces. 
+# This allows their seamless transition into pluggable, 
+# interchangeable components. Well-composed objects are therefore 
+# easily usable in new and unexpected contexts.
+
+# At its best, composition results in applications built of simple, 
+# pluggable objects that are easy to extend and have a high 
+# tolerance for change.
+
+#### Costs of Compositions ####
+
+# Composition’s strengths, as with most things in life, contribute 
+# to its weaknesses.
+
+# A composed object relies on its many parts. Even if each part is 
+# small and easily understood, the combined operation of the whole 
+# may be less than obvious. While every individual part may indeed 
+# be transparent, the whole may not be.
+
+# The benefits of structural independence are gained at the cost of 
+# automatic message delegation. The composed object must explicitly 
+# know which messages to delegate and to whom. Identical delegation 
+# code may be needed by many different objects; composition provides 
+# no way to share this code.
+
+# As these costs and benefits illustrate, composition is excellent 
+# at prescribing rules for assembling an object made of parts but 
+# doesn’t provide as much help for the problem of arranging code for 
+# a collection of parts that are very nearly identical.
