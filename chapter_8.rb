@@ -704,3 +704,73 @@ mountain_parts = PartsFactory.build(mountain_config)
 # all the knowledge needed to create a valid Parts. This 
 # information was previously dispersed throughout the application but 
 # now it is contained in this one class and these two arrays.
+
+### Leveraging the PartsFactory ###
+
+# Now that the PartsFactory is up and running, have another look at 
+# the Part class (repeated below). Part is simple. Not only that, the 
+# only even slightly complicated line of code (the fetch on line 7 
+# below) is duplicated in PartsFactory. If PartsFactory created every 
+# Part, Part wouldn’t need this code. And if you remove this code 
+# from Part, there’s almost nothing left; you can replace the whole 
+# Part class with a simple OpenStruct.
+
+############## Page 179 ##############
+class Part
+  attr_reader :name, :description, :needs_spare
+
+  def initialize(args)
+    @name         = args[:name]
+    @description  = args[:description]
+    @needs_spare  = args.fetch(:needs_spare, true)
+  end
+end
+
+# **
+# Ruby’s OpenStruct class is a lot like the Struct class that you’ve 
+# already seen, it provides a convenient way to bundle a number of 
+# attributes into an object. The difference between the two is that 
+# Struct takes position order initialization arguments while 
+# OpenStruct takes a hash for its initialization and then derives 
+# attributes from the hash.
+# There are good reasons to remove the Part class; this simplifies 
+# the code and you may never again need anything as complicated as 
+# what you currently have. You can remove all trace of Part by 
+# deleting the class and then changing PartsFactory to use OpenStruct 
+# to create an object that plays the Part role. The following code 
+# shows a new version of PartFactory where part creation has been 
+# refactored into a method of its own.
+
+############## Page 179 ##############
+require 'ostruct'
+module PartsFactory
+  def self.build(config, parts_class = Parts)
+    parts_class.new(
+      config.collect {|part_config|
+        create_part(part_config)
+      }
+    )
+  end
+
+  def self.create_part(part_config)
+    OpenStruct.new(
+      name:         part_config[0],
+      description:  part_config[1],
+      needs_spare:  part_config.fetch(2, true)
+    )
+  end
+end
+
+# This new version of PartsFactory works. As shown below, it returns 
+# a Parts that contains an array of OpenStruct objects, each of which 
+# plays the Part role.
+
+############## Page 180 ##############
+mountain_parts = PartsFactory.build(mountain_config)
+# -> <Parts:0x000001009ad8b8 @parts=
+#      [#<OpenStruct name="chain",
+#                    description="10-speed",
+#                    needs_spare=true>,
+#       #<OpenStruct name="tire_size",
+#                    description="2.1",
+#                    etc ...
