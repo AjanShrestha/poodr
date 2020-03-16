@@ -774,3 +774,183 @@ mountain_parts = PartsFactory.build(mountain_config)
 #       #<OpenStruct name="tire_size",
 #                    description="2.1",
 #                    etc ...
+
+## The Composed Bicycle ##
+
+# The following code shows that Bicycle now uses composition. It 
+# shows Bicycle, Parts, and PartsFactory and the configuration arrays 
+# for road and mountain bikes. Bicycle has-a Parts, which in turn 
+# has-a collection of Part objects. Parts and
+
+# Part may exist as classes, but the objects in which they are 
+# contained think of them as roles. Parts is a class that plays the 
+# Parts role; it implements spares. The role of Part is played by an 
+# OpenStruct, which implements name, description and needs_spare.
+
+# The following 54 lines of code completely replace the 66-line 
+# inheritance hierarchy from Chapter 6.
+
+class Bicycle
+  attr_reader :size, :parts
+
+  def initialize(args={})
+    @size       = args[:size]
+    @parts      = args[:parts]
+  end
+
+  def spares
+    parts.spares
+  end
+end
+
+require 'forwardable'
+class Parts
+  extend Forwardable
+  def_delegators :@parts, :size, :each
+  include Enumerable
+
+  def initialize(parts)
+    @parts = parts
+  end
+
+  def spares
+    select {|part| part.needs_spare}
+  end
+end
+
+require 'ostruct'
+module PartsFactory
+  def self.build(config, parts_class = Parts)
+    parts_class.new(
+      config.collect {|part_config|
+        create_part(part_config)})
+  end
+
+  def self.create_part(part_config)
+    OpenStruct.new(
+      name:        part_config[0],
+      description: part_config[1],
+      needs_spare: part_config.fetch(2, true))
+  end
+end
+
+road_config = [
+  ['chain',        '10-speed'],
+  ['tire_size',    '23'],
+  ['tape_color',   'red']
+]
+
+mountain_config = [
+  ['chain',        '10-speed'],
+  ['tire_size',    '2.1'],
+  ['front_shock',  'Manitou', false],
+  ['rear_shock',   'Fox']
+]
+
+# This new code works much like the prior Bicycle hierarchy. The only 
+# difference is that the spares message now returns an array of 
+# Part-like objects instead of a hash
+
+############## Page 182 ##############
+road_bike =
+  Bicycle.new(
+    size: 'L',
+    parts: PartsFactory.build(road_config))
+
+puts road_bike.spares
+# -> [#<OpenStruct name="chain", etc ...
+
+mountain_bike =
+  Bicycle.new(
+    size: 'L',
+    parts: PartsFactory.build(mountain_config))
+
+puts mountain_bike.spares
+# -> [#<OpenStruct name="chain", etc ...
+#
+
+# Now that these new classes exist, it’s very easy to create a new 
+# kind of bike. Adding support for recumbent bikes took 19 new lines 
+# of code in Chapter 6. This task can now be accomplished with 3 
+# lines of configuration.
+
+############## Page 182 ##############
+recumbent_config = [
+  ['chain',        '9-speed'],
+  ['tire_size',    '28'],
+  ['flag',         'tall and orange']
+]
+
+recumbent_bike =
+  Bicycle.new(
+    size: 'L',
+    parts: PartsFactory.build(recumbent_config))
+
+puts recumbent_bike.spares
+# -> [#<OpenStruct
+#       name="chain",
+#       description="9-speed",
+#       needs_spare=true>,
+#     #<OpenStruct
+#       name="tire_size",
+#       description="28",
+#       needs_spare=true>,
+#     #<OpenStruct
+#       name="flag",
+#       description="tall and orange",
+#       needs_spare=true>]
+
+# ***
+# ------------------------------------------------------
+#Aggregation: A Special Kind of Composition
+
+# You already know the term delegation; delegation is when one object 
+# receives a message and merely forwards it to another. Delegation 
+# creates dependencies; the receiving object must recognize the 
+# message and know where to send it.
+
+# Composition often involves delegation but the term means something 
+# more. A composed object is made up of parts with which it expects 
+# to interact via well-defined interfaces.
+
+# Composition describes a has-a relationship. Meals have appetizers, 
+# universities have departments, bicycles have parts. Meals, 
+# universities, and bicycles are composed objects. Appetizers, 
+# departments, and parts are roles. The composed object depends on 
+# the interface of the role.
+# Because meals interact with appetizers using an interface, new 
+# objects that wish to act as appetizers need only implement this 
+# interface. Unanticipated appetizers fit seamlessly and 
+# interchangeably into existing meals.
+
+# The term composition can be a bit confusing because it gets used 
+# for two slightly different concepts. The definition above is for 
+# the broadest use of the term. In most cases when you see 
+# composition it will indicate nothing more than this general has-a 
+# relationship between two objects.
+# However, as formally defined it means something a bit more 
+# specific; it indicates a has-a relationship where the contained 
+# object has no life independent of its container. When used in this 
+# stricter sense you know not only that meals have appetizers, but 
+# also that once the meal is eaten the appetizer is also gone.
+
+# This leaves a gap in the definition that is filled by the term 
+# aggregation. Aggregation is exactly like composition except that 
+# the contained object has an independent life. Universities have 
+# departments, which in turn have professors. If your application 
+# manages many universities and knows about thousands of professors, 
+# it’s quite reasonable to expect that although a department 
+# completely disappears when its university goes defunct, its 
+# professors continue to exist.
+
+# The university–department relationship is one of composition (in 
+# its strictest sense) and the department–professor relationship is 
+# aggregation.
+# Destroying a department does not destroy its professors; they have 
+# an existence and life of their own.
+
+# This distinction between composition and aggregation may have 
+# little practical effect on your code. Now that you are familiar 
+# with both terms you can use composition to refer to both kinds of 
+# relationships and be more explicit only if the need arises.
+# ------------------------------------------------------
