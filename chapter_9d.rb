@@ -11,3 +11,26 @@
 # However, the real world is not so neat and this simple rule does 
 # not completely suffice. Dealing with private methods requires 
 # judgment and flexibility.
+
+### Ignoring Private Methods During Tests ###
+# There are many excellent reasons to omit tests of private methods.
+#   First, such tests are redundant. Private methods are hidden 
+#     inside the object under test and their results cannot be seen 
+#     by others. These private methods are invoked by public methods 
+#     that already have tests. A bug in a private method can 
+#     certainly break the overall application but this failure will 
+#     always be exposed by an existing test. Testing private methods 
+#     is never necessary.
+#   Second, private methods are unstable. Tests of private methods 
+#     are therefore coupled to application code that is likely to 
+#     change. When the application changes the tests will be forced 
+#     to change in turn. It’s easy to create a situation where 
+#     precious time is spent performing ongoing maintenance on 
+#     unnecessary tests.
+#   Finally, testing private methods can mislead others into using 
+#     them. Tests provide documentation about the object under test. 
+#     They tell a story about how it expects to interact with the 
+#     world at large. Including private methods in this story 
+#     distracts the readers from its main purpose and encourages them 
+#     to break encapsulation and to depend on these methods. Your 
+#     tests should hide private methods, not expose them.
