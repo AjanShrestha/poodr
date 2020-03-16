@@ -266,3 +266,76 @@
 # coupled tests can tolerate application changes without being forced 
 # to change in turn. As long as the public interfaces remain stable, 
 # you can write tests once and they will keep you safe forever.
+
+# **
+### Knowing When to Test ###
+# You should write tests first, whenever it makes sense to do so.
+# Unfortunately, judging when it makes sense to do so can be a 
+# challenge for novice designers, rendering this advice less than 
+# helpful. Novices often write code that is far too coupled; they 
+# combine unrelated responsibilities and bind many dependencies into 
+# every object. Their applications are tightly woven tapestries of 
+# entangled code where no object lives in isolation. It is very hard 
+# to retroactively test these applications because tests are reuse 
+# and this code can’t be reused.
+
+# Writing tests first forces a modicum of reusability to be built 
+# into an object from its inception; it would otherwise be impossible 
+# to write tests at all. Therefore, novice designers are best served 
+# by writing test-first code. Their lack of design skills may make 
+# this bafflingly difficult but if they persevere they will at least 
+# have testable code, something that may not otherwise be true.
+# Be warned, however, that writing tests first is no substitute for 
+# and does not guarantee a well-designed application. The reusability 
+# that results from test-first is an improvement over nothing at all 
+# but the resulting application can still fall far short of good 
+# design. Well-intentioned novices often write expensive, duplicative 
+# tests around messy, tightly coupled code. It is an unfortunate 
+# truth that the most complex code is usually written by the least 
+# qualified person. This does not reflect an innate complexity of the 
+# underlying task, rather a lack of experience on the part of the 
+# programmer. Novice programmers don’t yet have the skills to write 
+# simple code.
+
+# The overcomplicated applications these novices produce should be 
+# viewed as triumphs of perseverance; it’s a miracle these 
+# applications work at all. The code is hard. The applications are 
+# difficult to change and every refactoring breaks all the tests. 
+# This high cost of change can easily start a downward productivity 
+# spiral that is discouraging for all concerned. Changes cascade 
+# throughout the application, and the maintenance cost of tests makes 
+# them seem costly relative to their worth.
+# If you are a novice and in this situation, it’s important to 
+# sustain faith in the value of tests. Done at the correct time and 
+# in the right amounts, testing, and writing code test-first, will 
+# lower your overall costs. Gaining these benefits requires applying 
+# object-oriented design principles everywhere, both to the code of 
+# your application and to the code in your tests. Your new-found 
+# knowledge of design already makes it easier to write testable code. 
+# Because well-designed applications are easy to change, and 
+# well-designed tests may very well avoid change altogether, these 
+# overall design improvements pay off dramatically.
+
+# Experienced designers garner subtler improvements from 
+# testing-first. It’s not that they can’t benefit from it or that 
+# they’ll never discover something unexpected by following its 
+# dictates, rather that the gains accrued from forced reuse are ones 
+# they already have. These programmers already write loosely coupled, 
+# reusable code; tests add value in other ways.
+# It is not unheard of for experienced designers to “spike” a 
+# problem, that is, to do experiments where they just write code. 
+# These experiments are exploratory, for problems about whose 
+# solution they are uncertain. Once clarity is gained and a design 
+# suggests itself, these programmers then revert to test-first for 
+# production code.
+
+# Your overall goal is to create well-designed applications that have 
+# acceptable test coverage. The best way to reach this goal varies 
+# according to the strengths and experience of the programmer.
+
+# This license to use your own judgment is not permission to skip 
+# testing. Poorly designed code without tests is just legacy code 
+# that can’t be tested. Don’t overestimate your strengths and use an 
+# inflated self-view as an excuse to avoid tests. While it sometimes 
+# makes sense to write a bit of code the old fashioned way, you 
+# should err on the side of test-first.
